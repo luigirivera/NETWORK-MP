@@ -30,6 +30,9 @@ public class ServerView extends JFrame implements ServerObserver {
 		logsArea.setSize(500, 519);
 		logsArea.setRows(59);
 		logsArea.setColumns(33);
+		logsArea.setEditable(false);
+		
+		
 		panel.add(laScroll);
 		
 		add(panel);

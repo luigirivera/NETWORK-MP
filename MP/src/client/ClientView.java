@@ -1,4 +1,4 @@
-package chatroomView;
+package client;
 
 public class ClientView {
 

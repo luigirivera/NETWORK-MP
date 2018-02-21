@@ -1,10 +1,8 @@
-package chatroomView;
+package server;
 
 import java.awt.event.*;
 
 import javax.swing.*;
-
-import chatroomModel.Server;
 
 public class ServerView extends JFrame implements ServerObserver {
 	

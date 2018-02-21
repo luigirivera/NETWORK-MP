@@ -6,8 +6,9 @@ import java.util.*;
 
 public class Server {
 	
-	public static List<Socket> Connections;
-	public static List<String> Users;
+	static List<Socket> Connections;
+	static List<String> Users;
+	
 	public final static int PORT = 5000;
 	
 	public Server() {
@@ -29,7 +30,9 @@ public class Server {
 				System.out.println("Client connected from:" + socket.getLocalAddress().getHostName());
 				this.addUser(socket);
 				
-				
+				SocketChecker checker = new SocketChecker(socket);
+				Thread scThread = new Thread(checker);
+				scThread.start();
 			}
 		}catch(Exception e) {
 			e.printStackTrace();

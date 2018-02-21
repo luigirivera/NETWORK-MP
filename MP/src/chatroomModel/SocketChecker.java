@@ -4,6 +4,8 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+import chatroomView.ServerObserver;
+
 public class SocketChecker implements Runnable {
 
 	private Socket socket;
@@ -25,7 +27,9 @@ public class SocketChecker implements Runnable {
 				PrintWriter out = new PrintWriter(connection.getOutputStream());
 				out.println(connection.getLocalAddress().getHostName() + " disconnected");
 				out.flush();
-				System.out.println(connection.getLocalAddress().getHostName() + " disconnected");
+				
+				for(ServerObserver ob : server.getObservers())
+					ob.update(connection.getLocalAddress().getHostName() + " disconnected");
 			}
 		}
 	}
@@ -50,7 +54,8 @@ public class SocketChecker implements Runnable {
 						PrintWriter out = new PrintWriter(socket.getOutputStream());
 						out.println(message);
 						out.flush();
-						System.out.println("Sent to: " + connection.getLocalAddress().getHostName());
+						for(ServerObserver ob : server.getObservers())
+							ob.update("Sent to: " + connection.getLocalAddress().getHostName());
 					}
 				}
 			}

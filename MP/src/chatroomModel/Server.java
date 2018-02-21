@@ -81,8 +81,6 @@ public class Server {
 		this.observers = observers;
 	}
 
-
-	
 	public void add(ServerObserver obs) {
 		observers.add(obs);
 	}

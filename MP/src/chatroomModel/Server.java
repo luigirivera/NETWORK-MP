@@ -6,8 +6,8 @@ import java.util.*;
 
 public class Server {
 	
-	static List<Socket> Connections;
-	static List<String> Users;
+	private List<Socket> Connections;
+	private List<String> Users;
 	
 	public final static int PORT = 5000;
 	
@@ -30,7 +30,7 @@ public class Server {
 				System.out.println("Client connected from:" + socket.getLocalAddress().getHostName());
 				this.addUser(socket);
 				
-				SocketChecker checker = new SocketChecker(socket);
+				SocketChecker checker = new SocketChecker(socket, this);
 				Thread scThread = new Thread(checker);
 				scThread.start();
 			}
@@ -54,6 +54,21 @@ public class Server {
 		get.close();
 	}
 	
+	public List<Socket> getConnections() {
+		return Connections;
+	}
+
+	public void setConnections(List<Socket> connections) {
+		Connections = connections;
+	}
+
+	public List<String> getUsers() {
+		return Users;
+	}
+
+	public void setUsers(List<String> users) {
+		Users = users;
+	}
 	
 
 }

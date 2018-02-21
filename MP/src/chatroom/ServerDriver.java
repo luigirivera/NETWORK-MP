@@ -12,6 +12,9 @@ public class ServerDriver {
 		Server server = new Server();
 		ServerView sView = new ServerView(server);
 		ServerController sControl = new ServerController(server, sView);
+		
+		server.add(sView);
+		
 		try {
 			server.init();
 		}catch(IOException e) {

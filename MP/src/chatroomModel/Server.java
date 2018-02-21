@@ -8,16 +8,16 @@ import chatroomView.ServerObserver;
 
 public class Server {
 	
-	private List<Socket> Connections;
-	private List<String> Users;
+	private List<Socket> connections;
+	private List<String> users;
 	private ServerSocket server;
 	private List<ServerObserver> observers;
 	
 	public final static int PORT = 5000;
 	
 	public Server() {
-		Connections = new ArrayList<Socket>();
-		Users = new ArrayList<String>();
+		connections = new ArrayList<Socket>();
+		users = new ArrayList<String>();
 		observers = new ArrayList<ServerObserver>();
 		
 	}
@@ -32,7 +32,7 @@ public class Server {
 			while(true)
 			{
 				Socket socket = server.accept();
-				Connections.add(socket);
+				connections.add(socket);
 				
 				for(ServerObserver ob : observers)
 					ob.update("Client connected from:" + socket.getLocalAddress().getHostName());
@@ -54,11 +54,11 @@ public class Server {
 	private void addUser(Socket socket) throws IOException {
 		Scanner get = new Scanner(socket.getInputStream());
 		String name = get.nextLine();
-		Users.add(name);
+		users.add(name);
 		
-		for(Socket connection : Connections) {
+		for(Socket connection : connections) {
 			PrintWriter print = new PrintWriter(connection.getOutputStream());
-			print.println("#?!" + Users);
+			print.println("#?!" + users);
 			print.flush();
 		}
 		
@@ -86,19 +86,19 @@ public class Server {
 	}
 	
 	public List<Socket> getConnections() {
-		return Connections;
+		return connections;
 	}
 
 	public void setConnections(List<Socket> connections) {
-		Connections = connections;
+		this.connections = connections;
 	}
 
 	public List<String> getUsers() {
-		return Users;
+		return users;
 	}
 
 	public void setUsers(List<String> users) {
-		Users = users;
+		this.users = users;
 	}
 	
 

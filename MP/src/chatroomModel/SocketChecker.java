@@ -16,12 +16,17 @@ public class SocketChecker implements Runnable {
 		this.server = server;
 	}
 	
-	public void checkConnection() {
+	public void checkConnection() throws IOException {
 		if(!socket.isConnected())
 		{
 			server.getConnections().remove(socket);
 			
-			
+			for(Socket connection : server.getConnections()) {
+				PrintWriter out = new PrintWriter(connection.getOutputStream());
+				out.println(connection.getLocalAddress().getHostName() + " disconnected");
+				out.flush();
+				System.out.println(connection.getLocalAddress().getHostName() + " disconnected");
+			}
 		}
 	}
 
@@ -37,12 +42,26 @@ public class SocketChecker implements Runnable {
 				
 				if(input.hasNext())
 				{
+					String message = input.nextLine();
 					
+					System.out.println(socket.getLocalAddress().getHostName() + " said: " + message);
+					
+					for(Socket connection : server.getConnections()) {
+						PrintWriter out = new PrintWriter(socket.getOutputStream());
+						out.println(message);
+						out.flush();
+						System.out.println("Sent to: " + connection.getLocalAddress().getHostName());
+					}
 				}
 			}
-			
 		}catch(IOException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				socket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}

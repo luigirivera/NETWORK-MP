@@ -1,6 +1,6 @@
 package chatroom;
 
-import client.Client;
+import client.*;
 
 public class ClientDriver {
 

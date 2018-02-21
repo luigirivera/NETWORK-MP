@@ -1,5 +1,7 @@
 package chatroomView;
 
+import java.awt.event.*;
+
 import javax.swing.*;
 
 import chatroomModel.Server;
@@ -18,6 +20,7 @@ public class ServerView extends JFrame implements ServerObserver {
 		this.init();
 		setSize(400,1000);
 		setVisible(true);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
 	private void init() {
@@ -33,10 +36,15 @@ public class ServerView extends JFrame implements ServerObserver {
 		
 		add(panel);
 	}
+	
 
 	@Override
 	public void update(String message) {
 		logsArea.append(message + "\n");
 		
+	}
+	
+	public void addWindowController(WindowListener e) {
+		this.addWindowListener(e);
 	}
 }

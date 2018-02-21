@@ -65,6 +65,24 @@ public class Server {
 		get.close();
 	}
 	
+	public ServerSocket getServer() {
+		return server;
+	}
+
+	public void setServer(ServerSocket server) {
+		this.server = server;
+	}
+
+	public List<ServerObserver> getObservers() {
+		return observers;
+	}
+
+	public void setObservers(List<ServerObserver> observers) {
+		this.observers = observers;
+	}
+
+
+	
 	public void add(ServerObserver obs) {
 		observers.add(obs);
 	}

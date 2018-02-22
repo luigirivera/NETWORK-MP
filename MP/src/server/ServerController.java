@@ -11,8 +11,10 @@ public class ServerController {
 	public ServerController(Server model, ServerView view) {
 		this.model = model;
 		this.view = view;
-		
-		this.view.addWindowListener(new ServerWindowListener());
+	}
+	
+	public void init() {
+		view.addWindowListener(new ServerWindowListener());
 	}
 	
 	class ServerWindowListener implements WindowListener{

@@ -14,7 +14,7 @@ public class ServerView extends JFrame implements ServerObserver {
 	private JTextArea logsArea;
 	
 	public ServerView(Server model) {
-		super("Datcord Server Logs");
+		super("MonoChrome Server Logs");
 		this.model = model;
 	}
 	

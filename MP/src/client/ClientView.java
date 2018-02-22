@@ -26,7 +26,7 @@ public class ClientView extends JFrame {
 	private JScrollPane messageScroll;
 	
 	public ClientView(Client model) {
-		super("Datcord");
+		super("MonoChrome");
 		
 		this.model = model;
 		

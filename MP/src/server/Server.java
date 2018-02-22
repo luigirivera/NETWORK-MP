@@ -14,7 +14,7 @@ public class Server {
 	public Server() {
 		connections = new ArrayList<UserConnection>();
 		observers = new ArrayList<ServerObserver>();
-
+		
 	}
 
 	public void init() throws IOException {

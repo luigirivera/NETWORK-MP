@@ -17,11 +17,15 @@ public class ServerDriver {
 		}catch(IOException e) {
 			e.printStackTrace();
 		}*/
+		
 		ServerView sView = new ServerView(server);
 		sView.init();
 		server.attach(sView);
 		ServerController sControl = new ServerController(server, sView);
 		sControl.init();
 		
+		try {
+			server.init();
+		}catch(IOException e) {}
 	}
 }

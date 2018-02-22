@@ -14,7 +14,7 @@ public class ServerController {
 	}
 	
 	public void init() {
-		view.addWindowListener(new ServerWindowListener());
+		view.addWindowListening(new ServerWindowListener());
 	}
 	
 	class ServerWindowListener implements WindowListener{

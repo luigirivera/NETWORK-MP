@@ -25,6 +25,10 @@ public class ClientView extends JFrame {
 	private JScrollPane userListScroll;
 	private JScrollPane messageScroll;
 	
+	private JFrame dmFrame;
+	private JTextField dmMessage;
+	private JButton dmSend;
+	
 	public ClientView(Client model) {
 		super("MonoChrome");
 		

@@ -8,7 +8,6 @@ public class ClientDriver {
 		Client client = new Client();
 		client.init();
 		ClientView cView = new ClientView(client);
-		cView.init();
 		ClientController cController = new ClientController(client, cView);
 		cController.init();
 	}

@@ -26,6 +26,10 @@ public class ClientController {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			view.getLogin().setEnabled(false);
+			view.getUserName().setEnabled(false);
+			view.getLogout().setEnabled(true);
+			view.getMessage().setEnabled(true);
+			view.getSendMessage().setEnabled(true);
 		}
 
 	}
@@ -34,7 +38,11 @@ public class ClientController {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-
+			view.getLogin().setEnabled(true);
+			view.getUserName().setEnabled(true);
+			view.getLogout().setEnabled(false);
+			view.getMessage().setEnabled(false);
+			view.getSendMessage().setEnabled(false);
 		}
 
 	}

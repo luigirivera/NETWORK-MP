@@ -2,8 +2,7 @@ package client;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
+import java.io.IOException;
 
 public class ClientController {
 
@@ -32,6 +31,12 @@ public class ClientController {
 				view.getUserName().setEnabled(false);
 				//asking server if username is ok
 				//registering user socket
+				
+				try {
+					model.openSocket();
+				} catch (IOException ex) {}
+				
+				
 				view.getLogout().setEnabled(true);
 				view.getMessage().setEnabled(true);
 				view.getSendMessage().setEnabled(true);

@@ -27,9 +27,9 @@ public class ConnectionChecker implements Runnable {
 
 	@Override
 	public void run() {
-		/*try {
-			input = new Scanner(socket.getInputStream());
-			output = new PrintWriter(socket.getOutputStream());
+		try {
+			input = new Scanner(connection.getSocket().getInputStream());
+			output = new PrintWriter(connection.getSocket().getOutputStream());
 			
 			while(true)
 			{
@@ -38,26 +38,19 @@ public class ConnectionChecker implements Runnable {
 				if(input.hasNext())
 				{
 					String message = input.nextLine();
-					
-					System.out.println(socket.getLocalAddress().getHostName() + " said: " + message);
-					
-					for(Socket connection : server.getConnections()) {
-						PrintWriter out = new PrintWriter(socket.getOutputStream());
-						out.println(message);
-						out.flush();
-						System.out.println("Sent to: " + connection.getLocalAddress().getHostName());
-					}
+					server.blastMessage(connection.getUser().getName() + ": " + message);
+					server.log(connection.getUser().getName() + ": " + message);
 				}
 			}
 		}catch(IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				socket.close();
+				connection.getSocket().close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}*/
+		}
 
 	}
 

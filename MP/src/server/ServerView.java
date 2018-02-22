@@ -45,7 +45,7 @@ public class ServerView extends JFrame implements ServerObserver {
 		
 	}
 	
-	public void addWindowController(WindowListener e) {
+	public void addWindowListener(WindowListener e) {
 		this.addWindowListener(e);
 	}
 }

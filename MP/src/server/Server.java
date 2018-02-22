@@ -1,13 +1,10 @@
-package chatroomModel;
+package server;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import chatroomView.ServerObserver;
-
 public class Server {
-
 	private ServerSocket server;
 	private List<UserConnection> connections;
 	private List<ServerObserver> observers;

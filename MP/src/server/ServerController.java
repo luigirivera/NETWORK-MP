@@ -1,10 +1,7 @@
-package chatroomController;
+package server;
 
 import java.awt.event.*;
 import java.io.IOException;
-
-import chatroomModel.Server;
-import chatroomView.ServerView;
 
 public class ServerController {
 

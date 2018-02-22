@@ -2,9 +2,7 @@ package chatroom;
 
 import java.io.IOException;
 
-import chatroomController.ServerController;
-import chatroomModel.Server;
-import chatroomView.ServerView;
+import server.*;
 
 public class ServerDriver {
 

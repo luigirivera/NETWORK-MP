@@ -1,4 +1,3 @@
 /chatroom/
-/chatroomModel/
-/chatroomView/
-/chatroomController/
+/server/
+/client/

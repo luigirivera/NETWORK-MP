@@ -1,4 +1,4 @@
-package chatroomModel;
+package client;
 
 import java.net.*;
 import java.util.*;

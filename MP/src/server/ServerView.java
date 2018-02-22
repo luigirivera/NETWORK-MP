@@ -1,10 +1,8 @@
-package chatroomView;
+package server;
 
 import java.awt.event.*;
 
 import javax.swing.*;
-
-import chatroomModel.Server;
 
 public class ServerView extends JFrame implements ServerObserver {
 	
@@ -14,7 +12,7 @@ public class ServerView extends JFrame implements ServerObserver {
 	private JTextArea logsArea;
 	
 	public ServerView(Server server) {
-		super("Server Logs");
+		super("Datcord Server Logs");
 		model = server;
 		
 		this.init();
@@ -32,6 +30,9 @@ public class ServerView extends JFrame implements ServerObserver {
 		logsArea.setSize(500, 519);
 		logsArea.setRows(59);
 		logsArea.setColumns(33);
+		logsArea.setEditable(false);
+		
+		
 		panel.add(laScroll);
 		
 		add(panel);

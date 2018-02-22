@@ -6,36 +6,62 @@ import java.util.*;
 
 public class Server {
 	private ServerSocket server;
+	public void setServer(ServerSocket server) {
+		this.server = server;
+	}
+
 	private List<UserConnection> connections;
 	private List<ServerObserver> observers;
-
+	private SocketListen socketListen;
+	
 	public final static int PORT = 5000;
 
 	public Server() {
 		connections = new ArrayList<UserConnection>();
 		observers = new ArrayList<ServerObserver>();
 		
+		socketListen = new SocketListen(this);
+	}
+	
+	class SocketListen implements Runnable{
+		private Server thisServer;
+		
+		public SocketListen(Server server) {
+			thisServer = server;
+		}
+		
+		@Override
+		public void run() {
+			try {
+				while (true) {
+					Socket socket = server.accept();
+
+					thisServer.log("Client connected from:" + socket.getLocalAddress().getHostName());
+
+					ConnectionChecker checker = new ConnectionChecker(thisServer.addUser(socket), thisServer);
+					Thread ccThread = new Thread(checker);
+					ccThread.start();
+				} 
+			} catch (Exception e) {}
+			
+		}
+		
 	}
 
-	public void init() throws IOException {
+	public void init() {
 		try {
 			server = new ServerSocket(PORT);
 
 			this.log("Server started!");
-
-			while (true) {
-				Socket socket = server.accept();
-
-				this.log("Client connected from:" + socket.getLocalAddress().getHostName());
-
-				ConnectionChecker checker = new ConnectionChecker(this.addUser(socket), this);
-				Thread ccThread = new Thread(checker);
-				ccThread.start();
-			}
+			
+			Thread slThread = new Thread(socketListen);
+			slThread.start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			server.close();
+			try {
+				server.close();
+			} catch (IOException e) {}
 		}
 
 	}

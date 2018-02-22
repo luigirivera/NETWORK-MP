@@ -51,6 +51,8 @@ public class ClientView extends JFrame {
 		
 		add(configPanel);
 		
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
 		this.setVisible(true);
 	}
 	

@@ -12,7 +12,7 @@ public class ServerView extends JFrame implements ServerObserver {
 	private JTextArea logsArea;
 	
 	public ServerView(Server server) {
-		super("Server Logs");
+		super("Datcord Server Logs");
 		model = server;
 		
 		this.init();

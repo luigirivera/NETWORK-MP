@@ -1,5 +1,6 @@
 package server;
 
+import java.awt.Dimension;
 import java.awt.event.*;
 
 import javax.swing.*;
@@ -13,7 +14,7 @@ public class ServerView extends JFrame implements ServerObserver {
 	private JTextArea logsArea;
 	
 	public ServerView(Server model) {
-		super("Datcord Server Logs");
+		super("MonoChrome Server Logs");
 		this.model = model;
 	}
 	
@@ -23,16 +24,15 @@ public class ServerView extends JFrame implements ServerObserver {
 		logsArea = new JTextArea();
 		
 		laScroll.setViewportView(logsArea);
-		logsArea.setSize(500, 519);
 		logsArea.setRows(59);
 		logsArea.setColumns(33);
-		logsArea.setEditable(false);
-		
+		logsArea.setEnabled(false);
 		
 		panel.add(laScroll);
 		
 		add(panel);
 		
+		setResizable(false);
 		setSize(400,1000);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);

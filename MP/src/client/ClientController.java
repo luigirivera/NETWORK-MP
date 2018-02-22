@@ -33,6 +33,8 @@ public class ClientController {
 				//asking server if username is ok
 				//registering user socket
 				view.getLogout().setEnabled(true);
+				view.getMessage().setEnabled(true);
+				view.getSendMessage().setEnabled(true);
 			}
 		}
 
@@ -46,6 +48,8 @@ public class ClientController {
 			//disconnect from the server
 			view.getUserName().setEnabled(true);
 			view.getLogin().setEnabled(true);
+			view.getMessage().setEnabled(false);
+			view.getSendMessage().setEnabled(false);
 		}
 
 	}

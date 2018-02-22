@@ -1,6 +1,8 @@
 package client;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
@@ -19,13 +21,20 @@ public class ClientView extends JFrame {
 	private JPanel chatPanel;
 	private JPanel configPanel;
 	private JLabel usernameLabel;
+	private JScrollPane chatScroll;
+	private JScrollPane userListScroll;
+	private JScrollPane messageScroll;
 	
 	public ClientView(Client model) {
-		super("Datcord");
+		super("MonoChrome");
 		
 		this.model = model;
 		
-		setSize(750,600);
+		init();
+		setSize(765,600);
+		setLayout(null);
+		setVisible(true);
+		setResizable(false);
 	}
 	
 	public void init() {
@@ -39,21 +48,45 @@ public class ClientView extends JFrame {
 		chatPanel = new JPanel();
 		configPanel = new JPanel();
 		usernameLabel = new JLabel("Username:");
+		chatScroll = new JScrollPane();
+		userListScroll = new JScrollPane();
+		messageScroll = new JScrollPane();
 		
 		userName.setPreferredSize(new Dimension(200,30));
 		
-		logout.setEnabled(false);
+		chatScroll.setViewportView(chat);
+		userListScroll.setViewportView(userList);
+		messageScroll.setViewportView(message);
 		
+		logout.setEnabled(false);
+		sendMessage.setEnabled(false);
+		chat.setEditable(false);
+		message.setEnabled(false);
+		
+		chatScroll.setPreferredSize(new Dimension(600,400));
+		userListScroll.setPreferredSize(new Dimension(100,400));
+		messageScroll.setPreferredSize(new Dimension(600,40));
+		
+		configPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		chatPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			
 		configPanel.add(usernameLabel);
 		configPanel.add(userName);
 		configPanel.add(login);
 		configPanel.add(logout);
 		
+		chatPanel.add(chatScroll);
+		chatPanel.add(userListScroll);
+		chatPanel.add(messageScroll);
+		chatPanel.add(sendMessage);
+		
+		configPanel.setBounds(0, 0, 750, 50);
+		chatPanel.setBounds(0, 50, 750, 511);
+		
 		add(configPanel);
+		add(chatPanel);
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		
-		this.setVisible(true);
 	}
 	
 	public void addLoginListener(ActionListener e) {
@@ -154,5 +187,29 @@ public class ClientView extends JFrame {
 
 	public void setUsernameLabel(JLabel usernameLabel) {
 		this.usernameLabel = usernameLabel;
+	}
+	
+	public JScrollPane getChatScroll() {
+		return chatScroll;
+	}
+
+	public void setChatScroll(JScrollPane chatScroll) {
+		this.chatScroll = chatScroll;
+	}
+
+	public JScrollPane getUserListScroll() {
+		return userListScroll;
+	}
+
+	public void setUserListScroll(JScrollPane userListScroll) {
+		this.userListScroll = userListScroll;
+	}
+
+	public JScrollPane getMessageScroll() {
+		return messageScroll;
+	}
+
+	public void setMessageScroll(JScrollPane messageScroll) {
+		this.messageScroll = messageScroll;
 	}
 }

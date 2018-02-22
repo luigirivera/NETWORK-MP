@@ -3,6 +3,8 @@ package client;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
+
 public class ClientController {
 
 	private Client model;
@@ -25,11 +27,15 @@ public class ClientController {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			view.getLogin().setEnabled(false);
-			view.getUserName().setEnabled(false);
-			view.getLogout().setEnabled(true);
-			view.getMessage().setEnabled(true);
-			view.getSendMessage().setEnabled(true);
+			if(!view.getUserName().getText().isEmpty()) {
+				view.getLogin().setEnabled(false);
+				view.getUserName().setEnabled(false);
+				//asking server if username is ok
+				//registering user socket
+				view.getLogout().setEnabled(true);
+				view.getMessage().setEnabled(true);
+				view.getSendMessage().setEnabled(true);
+			}
 		}
 
 	}
@@ -38,9 +44,10 @@ public class ClientController {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			view.getLogin().setEnabled(true);
-			view.getUserName().setEnabled(true);
 			view.getLogout().setEnabled(false);
+			//disconnect from the server
+			view.getUserName().setEnabled(true);
+			view.getLogin().setEnabled(true);
 			view.getMessage().setEnabled(false);
 			view.getSendMessage().setEnabled(false);
 		}

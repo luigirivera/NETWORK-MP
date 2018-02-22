@@ -90,7 +90,7 @@ public class ClientView extends JFrame {
 		add(configPanel);
 		add(chatPanel);
 		
-		
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
 	public void addLoginListener(ActionListener e) {

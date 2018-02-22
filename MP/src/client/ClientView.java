@@ -6,9 +6,10 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class ClientView extends JFrame {
-
+	private static final long serialVersionUID = 1L;
 	private Client model;
-	private JList userList;
+	
+	private JList<String> userList;
 	private JTextField userName;
 	private JTextField message;
 	private JTextArea chat;
@@ -19,18 +20,16 @@ public class ClientView extends JFrame {
 	private JPanel configPanel;
 	private JLabel usernameLabel;
 	
-	public ClientView(Client client) {
+	public ClientView(Client model) {
 		super("Datcord");
 		
-		model = client;
+		this.model = model;
 		
 		setSize(750,600);
-		this.init();
-		setVisible(true);
 	}
 	
-	private void init() {
-		userList = new JList(); //add the usernames to the JList as a parameter
+	public void init() {
+		userList = new JList<String>(); //add the usernames to the JList as a parameter
 		userName = new JTextField();
 		message = new JTextField();
 		chat = new JTextArea();
@@ -51,11 +50,19 @@ public class ClientView extends JFrame {
 		configPanel.add(logout);
 		
 		add(configPanel);
+		
+		this.setVisible(true);
 	}
 	
-	public void addActionController(ActionListener e) {
+	public void addLoginListener(ActionListener e) {
 		login.addActionListener(e);
+	}
+	
+	public void addLogoutListener(ActionListener e) {
 		logout.addActionListener(e);
+	}
+	
+	public void addSendMessageListener(ActionListener e) {
 		sendMessage.addActionListener(e);
 	}
 	

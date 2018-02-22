@@ -4,35 +4,30 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class SocketChecker implements Runnable {
+public class ConnectionChecker implements Runnable {
 
-	private Socket socket;
+	private UserConnection connection;
 	private Server server;
 	private Scanner input;
 	private PrintWriter output;
 	
-	public SocketChecker(Socket socket, Server server) {
-		this.socket = socket;
+	public ConnectionChecker(UserConnection connection, Server server) {
+		this.connection = connection;
 		this.server = server;
 	}
 	
 	public void checkConnection() throws IOException {
-		if(!socket.isConnected())
+		if(!connection.getSocket().isConnected())
 		{
-			server.getConnections().remove(socket);
-			
-			for(Socket connection : server.getConnections()) {
-				PrintWriter out = new PrintWriter(connection.getOutputStream());
-				out.println(connection.getLocalAddress().getHostName() + " disconnected");
-				out.flush();
-				System.out.println(connection.getLocalAddress().getHostName() + " disconnected");
-			}
+			connection.getSocket().close();
+			server.getConnections().remove(connection);
+			server.blastMessage(connection.getUser().getName() + " disconnected");
 		}
 	}
 
 	@Override
 	public void run() {
-		try {
+		/*try {
 			input = new Scanner(socket.getInputStream());
 			output = new PrintWriter(socket.getOutputStream());
 			
@@ -62,7 +57,7 @@ public class SocketChecker implements Runnable {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
+		}*/
 
 	}
 

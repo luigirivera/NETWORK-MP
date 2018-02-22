@@ -7,101 +7,119 @@ import java.util.*;
 import chatroomView.ServerObserver;
 
 public class Server {
-	
-	private List<Socket> Connections;
-	private List<String> Users;
+
 	private ServerSocket server;
+	private List<UserConnection> connections;
 	private List<ServerObserver> observers;
-	
+
 	public final static int PORT = 5000;
-	
+
 	public Server() {
-		Connections = new ArrayList<Socket>();
-		Users = new ArrayList<String>();
+		connections = new ArrayList<UserConnection>();
 		observers = new ArrayList<ServerObserver>();
-		
+
 	}
-	
+
 	public void init() throws IOException {
 		try {
 			server = new ServerSocket(PORT);
-			
-			for(ServerObserver ob : observers)
-				ob.update("Server started!");
-			
-			while(true)
-			{
+
+			this.log("Server started!");
+
+			while (true) {
 				Socket socket = server.accept();
-				Connections.add(socket);
-				
-				for(ServerObserver ob : observers)
-					ob.update("Client connected from:" + socket.getLocalAddress().getHostName());
-				
-				this.addUser(socket);
-				
-				SocketChecker checker = new SocketChecker(socket, this);
-				Thread scThread = new Thread(checker);
-				scThread.start();
+
+				this.log("Client connected from:" + socket.getLocalAddress().getHostName());
+
+				ConnectionChecker checker = new ConnectionChecker(this.addUser(socket), this);
+				Thread ccThread = new Thread(checker);
+				ccThread.start();
 			}
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			server.close();
 		}
-			
+
 	}
-	
-	private void addUser(Socket socket) throws IOException {
+
+	private UserConnection addUser(Socket socket) throws IOException {
 		Scanner get = new Scanner(socket.getInputStream());
 		String name = get.nextLine();
-		Users.add(name);
-		
-		for(Socket connection : Connections) {
-			PrintWriter print = new PrintWriter(connection.getOutputStream());
-			print.println("#?!" + Users);
-			print.flush();
-		}
-		
+		// do unique name checking later...
+		UserConnection uc = new UserConnection(new User(name), socket);
+		connections.add(uc);
+
+		/*
+		 * for (UserConnection connection : connections) { Socket socket =
+		 * connection.getSocket(); PrintWriter print = new
+		 * PrintWriter(socket.getOutputStream()); print.println("#?!" + Users);
+		 * print.flush(); }
+		 */
+
 		get.close();
+		return uc;
 	}
 	
+	public void blastMessage(String message) {
+		for (UserConnection connection : connections) {
+			try {
+				Socket socket = connection.getSocket();
+				PrintWriter print = new PrintWriter(socket.getOutputStream());
+				print.println(message);
+				print.flush();
+			} catch (IOException e) { e.printStackTrace(); }
+		}
+	}
+
+	public void attach(ServerObserver obs) {
+		observers.add(obs);
+	}
+
+	// equivalent of updateAll()
+	public void log(String message) {
+		System.out.println(message);
+		for (ServerObserver ob : observers)
+			ob.update(message);
+	}
+
 	public ServerSocket getServer() {
 		return server;
 	}
 
-	public void setServer(ServerSocket server) {
-		this.server = server;
+	public List<UserConnection> getConnections() {
+		return connections;
 	}
 
 	public List<ServerObserver> getObservers() {
 		return observers;
 	}
 
-	public void setObservers(List<ServerObserver> observers) {
-		this.observers = observers;
+}
+
+class UserConnection {
+	private User user;
+	private Socket socket;
+
+	public UserConnection(User user, Socket socket) {
+		this.user = user;
+		this.socket = socket;
 	}
 
-
-	
-	public void add(ServerObserver obs) {
-		observers.add(obs);
-	}
-	
-	public List<Socket> getConnections() {
-		return Connections;
+	public User getUser() {
+		return user;
 	}
 
-	public void setConnections(List<Socket> connections) {
-		Connections = connections;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
-	public List<String> getUsers() {
-		return Users;
+	public Socket getSocket() {
+		return socket;
 	}
 
-	public void setUsers(List<String> users) {
-		Users = users;
+	public void setSocket(Socket socket) {
+		this.socket = socket;
 	}
-	
 
 }

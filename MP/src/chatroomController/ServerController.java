@@ -6,61 +6,41 @@ import java.io.IOException;
 import chatroomModel.Server;
 import chatroomView.ServerView;
 
-public class ServerController implements WindowListener {
+public class ServerController {
 
 	private Server model;
 	private ServerView view;
 	
-	public ServerController(Server server, ServerView sView) {
-		model = server;
-		view = sView;
-	}
-
-	@Override
-	public void windowActivated(WindowEvent arg0) {
-		// TODO Auto-generated method stub
+	public ServerController(Server model, ServerView view) {
+		this.model = model;
+		this.view = view;
 		
+		this.view.addWindowListener(new ServerWindowListener());
 	}
-
-	@Override
-	public void windowClosed(WindowEvent arg0) {
-		try {
-			model.getServer().close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	
+	class ServerWindowListener implements WindowListener{
+		@Override
+		public void windowClosed(WindowEvent arg0) {
+			try {
+				model.getServer().close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
 		}
-		
-	}
 
-	@Override
-	public void windowClosing(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowDeiconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowIconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowOpened(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		@Override
+		public void windowActivated(WindowEvent arg0) {}
+		@Override
+		public void windowClosing(WindowEvent arg0) {}
+		@Override
+		public void windowDeactivated(WindowEvent arg0) {}
+		@Override
+		public void windowDeiconified(WindowEvent arg0) {}
+		@Override
+		public void windowIconified(WindowEvent arg0) {}
+		@Override
+		public void windowOpened(WindowEvent arg0) {}
 	}
 
 }

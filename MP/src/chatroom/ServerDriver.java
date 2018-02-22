@@ -13,7 +13,7 @@ public class ServerDriver {
 		ServerView sView = new ServerView(server);
 		ServerController sControl = new ServerController(server, sView);
 		
-		server.add(sView);
+		server.attach(sView);
 		
 		try {
 			server.init();

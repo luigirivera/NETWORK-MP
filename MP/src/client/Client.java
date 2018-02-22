@@ -5,11 +5,23 @@ import java.util.*;
 import java.io.*;
 
 public class Client {
-	
+	private String serverAddress;
+	private int serverPort;
 
-	
-	public void init() {
-		
+	public String getServerAddress() {
+		return serverAddress;
+	}
+
+	public void setServerAddress(String serverAddress) {
+		this.serverAddress = serverAddress;
+	}
+
+	public int getServerPort() {
+		return serverPort;
+	}
+
+	public void setServerPort(int serverPort) {
+		this.serverPort = serverPort;
 	}
 
 }

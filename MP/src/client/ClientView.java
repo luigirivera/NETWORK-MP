@@ -9,7 +9,10 @@ public class ClientView extends JFrame {
 	private JTextField userName;
 	private JTextField message;
 	private JTextArea chat;
-	
+	private JTextField host;
+	private JTextField port;
+	private JButton sendMessage;
+	private JButton login;
 	
 	public ClientView(Client client) {
 		super("Datcord");
@@ -26,5 +29,9 @@ public class ClientView extends JFrame {
 		userName = new JTextField();
 		message = new JTextField();
 		chat = new JTextArea();
+		host = new JTextField();
+		port = new JTextField();
+		sendMessage = new JButton();
+		login = new JButton();
 	}
 }

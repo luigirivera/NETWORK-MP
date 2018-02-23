@@ -29,20 +29,16 @@ public class Server {
 		
 		@Override
 		public void run() {
-			try {
 				while (true) {
 					
-					Socket socket = server.accept();
-					
-					thisServer.log("Client connected from:" + socket.getLocalAddress().getHostName());
-
-					ConnectionChecker checker = new ConnectionChecker(thisServer.addUser(socket), thisServer);
-					Thread ccThread = new Thread(checker);
-					ccThread.start();
+					try {
+						Socket socket = server.accept();
+						System.out.println("Client connected from:" + socket.getLocalAddress().getHostName());
+						ConnectionChecker checker = new ConnectionChecker(thisServer.addUser(socket), thisServer);
+						Thread ccThread = new Thread(checker);
+						ccThread.start();
+					} catch (Exception e) {}
 				}
-				
-			} catch (Exception e) {e.printStackTrace();}
-			
 		}
 		
 	}

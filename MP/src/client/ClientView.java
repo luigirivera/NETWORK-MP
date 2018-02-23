@@ -11,6 +11,8 @@ import javax.swing.*;
 
 public class ClientView extends JFrame {
 	private static final long serialVersionUID = 1L;
+	private static final String DM_TITLE_TEXT = " - MonoChrome";
+	
 	private Client model;
 	
 	private JList userList;

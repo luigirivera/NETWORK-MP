@@ -33,7 +33,7 @@ public class Server {
 					
 					try {
 						Socket socket = server.accept();
-						thisServer.log("Client connected from:" + socket.getLocalAddress().getHostName());
+						thisServer.log("Client connected from: " + socket.getRemoteSocketAddress());
 						ConnectionChecker checker = new ConnectionChecker(thisServer.addUser(socket), thisServer);
 						Thread ccThread = new Thread(checker);
 						ccThread.start();
@@ -48,7 +48,7 @@ public class Server {
 			server = new ServerSocket(PORT);
 
 			this.log("Server started!");
-			
+			this.log("Server IP:" + InetAddress.getLocalHost() + "; Port: " + server.getLocalPort());
 			Thread slThread = new Thread(socketListen);
 			slThread.start();
 		} catch (Exception e) {

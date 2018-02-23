@@ -13,7 +13,6 @@ public class Server {
 	public final static int PORT = 5000;
 
 	public Server() {
-		
 		connections = new ArrayList<UserConnection>();
 		observers = new ArrayList<ServerObserver>();
 		
@@ -30,7 +29,6 @@ public class Server {
 		@Override
 		public void run() {
 				while (true) {
-					
 					try {
 						Socket socket = server.accept();
 						thisServer.log("Client connected from: " + socket.getRemoteSocketAddress());

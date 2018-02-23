@@ -26,6 +26,39 @@ public class ClientController {
 		this.view.addLogoutListener(new LogoutListener());
 		this.view.addSendMessageListener(new SendMessageListener());
 		this.view.addMessageBoxListener(new MessageBoxKeyListener(), new MessageBoxFocusListener());
+		this.view.addLoginBoxListener(new LoginBoxListener());
+	}
+	
+	class LoginBoxListener implements KeyListener{
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			if(e.getKeyCode() == KeyEvent.VK_ENTER && !view.getUserName().getText().isEmpty()) {
+				view.getLogin().setEnabled(false);
+				view.getUserName().setEnabled(false);
+				//asking server if username is ok
+				//registering user socket
+				//adding the user to the usernameList
+				try {
+					model.openSocket();
+				} catch (IOException ex) {}
+				
+				
+				view.getLogout().setEnabled(true);
+				view.getMessage().setEnabled(true);
+				view.getSendMessage().setEnabled(true);
+				view.getUserList().setVisible(true);
+				view.getChat().setVisible(true);				
+			}
+			
+		}
+
+		@Override
+		public void keyReleased(KeyEvent arg0) {}
+
+		@Override
+		public void keyTyped(KeyEvent arg0) {}
+		
 	}
 
 	class LoginListener implements ActionListener {

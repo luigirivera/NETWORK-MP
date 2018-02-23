@@ -139,6 +139,10 @@ public class ClientView extends JFrame {
 	}
 
 //------------LISTENERS------------//
+	public void addLoginBoxListener(KeyListener e) {
+		userName.addKeyListener(e);
+	}
+	
 	public void addLoginListener(ActionListener e) {
 		login.addActionListener(e);
 	}

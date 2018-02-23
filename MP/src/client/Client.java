@@ -1,57 +1,67 @@
 package client;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
+
+import shared.Message;
 
 public class Client {
 	private final static String DEFAULT_SERVER_ADDRESS = "localhost";
 	private final static int DEFAULT_SERVER_PORT = 5000;
-	
+
+	private String name;
+
 	private Socket socket;
 	private String serverAddress;
 	private int serverPort;
-	
+
+	private ObjectInputStream inStream;
+	private ObjectOutputStream outStream;
+
 	public Client() {
 		this.serverAddress = DEFAULT_SERVER_ADDRESS;
 		this.serverPort = DEFAULT_SERVER_PORT;
 	}
-	
+
 	public void openSocket() throws IOException {
-		if(socket!=null && !socket.isClosed())
+		if (socket != null && !socket.isClosed())
 			closeSocket();
 		socket = new Socket(serverAddress, serverPort);
+		this.initStreams();
 	}
-	
+
+	private void initStreams() throws IOException {
+		inStream = new ObjectInputStream(socket.getInputStream());
+		outStream = new ObjectOutputStream(socket.getOutputStream());
+	}
+
 	public void closeSocket() throws IOException {
-		if (socket!=null)
+		if (socket != null) {
+			this.closeStreams();
 			socket.close();
+		}
 	}
 	
-	public void sendMessage(String msg) throws IOException {
-		PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
-		pw.println(msg);
-		//pw.close();
-	}
-	
-	public Socket getSocket() {
-		return socket;
+	private void closeStreams() throws IOException {
+		inStream.close();
+		outStream.close();
 	}
 
-	public String getServerAddress() {
-		return serverAddress;
+	public void sendMessage(String text) throws IOException {
+		Message message = new Message();
+		message.setSender(this.name);
+		message.setMessage(text);
+		outStream.writeObject(message);
 	}
 
-	public void setServerAddress(String serverAddress) {
-		this.serverAddress = serverAddress;
+	public String getName() {
+		return name;
 	}
 
-	public int getServerPort() {
-		return serverPort;
-	}
-
-	public void setServerPort(int serverPort) {
-		this.serverPort = serverPort;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

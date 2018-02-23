@@ -104,7 +104,8 @@ public class ClientView extends JFrame {
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
-	
+
+//------------LISTENERS------------//
 	public void addLoginListener(ActionListener e) {
 		login.addActionListener(e);
 	}
@@ -121,7 +122,8 @@ public class ClientView extends JFrame {
 		message.addKeyListener(e);
 		message.addFocusListener(f);
 	}
-	
+
+//------------GETTERS AND SETTERS------------//
 	public Client getModel() {
 		return model;
 	}

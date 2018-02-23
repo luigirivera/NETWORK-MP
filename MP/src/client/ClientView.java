@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyListener;
 
 import javax.swing.*;
 
@@ -113,6 +115,11 @@ public class ClientView extends JFrame {
 	
 	public void addSendMessageListener(ActionListener e) {
 		sendMessage.addActionListener(e);
+	}
+	
+	public void addMessageBoxListener(KeyListener e, FocusListener f) {
+		message.addKeyListener(e);
+		message.addFocusListener(f);
 	}
 	
 	public Client getModel() {

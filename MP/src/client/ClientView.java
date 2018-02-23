@@ -26,9 +26,11 @@ public class ClientView extends JFrame {
 	private JScrollPane messageScroll;
 	
 	private JFrame dmFrame;
+	private JPanel dmPanel;
 	private JTextField dmMessage;
 	private JButton dmSend;
 	private JTextArea dmChat;
+	private JScrollPane dmChatScroll;
 	
 	public ClientView(Client model) {
 		super("MonoChrome");
@@ -56,12 +58,19 @@ public class ClientView extends JFrame {
 		chatScroll = new JScrollPane();
 		userListScroll = new JScrollPane();
 		messageScroll = new JScrollPane();
+		dmFrame = new JFrame("<name> - MonoChrome");
+		dmPanel = new JPanel();
+		dmMessage = new JTextField();
+		dmSend = new JButton();
+		dmChat = new JTextArea();
+		dmChatScroll = new JScrollPane();
 		
 		userName.setPreferredSize(new Dimension(200,30));
 		
 		chatScroll.setViewportView(chat);
 		userListScroll.setViewportView(userList);
 		messageScroll.setViewportView(message);
+		dmChatScroll.setViewportView(dmChat);
 		
 		logout.setEnabled(false);
 		sendMessage.setEnabled(false);

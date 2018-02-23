@@ -48,7 +48,7 @@ public class Server {
 			server = new ServerSocket(PORT);
 
 			this.log("Server started!");
-			this.log("Server IP:" + InetAddress.getLocalHost() + "; Port: " + server.getLocalPort());
+			this.log("Server IP: " + InetAddress.getLocalHost() + " ; Port: " + server.getLocalPort());
 			Thread slThread = new Thread(socketListen);
 			slThread.start();
 		} catch (Exception e) {

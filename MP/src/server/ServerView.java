@@ -25,8 +25,6 @@ public class ServerView extends JFrame implements ServerObserver {
 		
 		laScroll.setViewportView(logsArea);
 		laScroll.setPreferredSize(new Dimension(375,968));
-		//logsArea.setRows(59);
-		//logsArea.setColumns(33);
 		logsArea.setEditable(false);
 		
 		panel.add(laScroll);

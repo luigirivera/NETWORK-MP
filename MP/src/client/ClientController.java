@@ -37,24 +37,9 @@ public class ClientController {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if(e.getKeyCode() == KeyEvent.VK_ENTER && !view.getUserName().getText().isEmpty()) {
-				view.getLogin().setEnabled(false);
-				view.getUserName().setEnabled(false);
-				//asking server if username is ok
-				//registering user socket
-				//adding the user to the usernameList
-				try {
-					model.openSocket();
-				} catch (IOException ex) {}
-				
-				
-				view.getLogout().setEnabled(true);
-				view.getMessage().setEnabled(true);
-				view.getSendMessage().setEnabled(true);
-				view.getUserList().setVisible(true);
-				view.getChat().setVisible(true);				
+			if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				onLogin();
 			}
-			
 		}
 
 		@Override
@@ -69,26 +54,30 @@ public class ClientController {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(!view.getUserName().getText().isEmpty()) {
-				view.getLogin().setEnabled(false);
-				view.getUserName().setEnabled(false);
-				//asking server if username is ok
-				//registering user socket
-				//adding the user to the usernameList
-				try {
-					model.openSocket();
-					model.sendMessage(view.getUserName().getText());
-				} catch (IOException ex) { ex.printStackTrace(); }
-				
-				
-				view.getLogout().setEnabled(true);
-				view.getMessage().setEnabled(true);
-				view.getSendMessage().setEnabled(true);
-				view.getUserList().setVisible(true);
-				view.getChat().setVisible(true);
-			}
+			onLogin();
 		}
 
+	}
+	
+	private void onLogin() {
+		if(!view.getUserName().getText().isEmpty()) {
+			view.getLogin().setEnabled(false);
+			view.getUserName().setEnabled(false);
+			//asking server if username is ok
+			//registering user socket
+			//adding the user to the usernameList
+			try {
+				model.openSocket();
+				model.sendMessage(view.getUserName().getText());
+			} catch (IOException ex) { ex.printStackTrace(); }
+			
+			
+			view.getLogout().setEnabled(true);
+			view.getMessage().setEnabled(true);
+			view.getSendMessage().setEnabled(true);
+			view.getUserList().setVisible(true);
+			view.getChat().setVisible(true);
+		}
 	}
 
 	class LogoutListener implements ActionListener {

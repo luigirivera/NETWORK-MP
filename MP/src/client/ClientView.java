@@ -13,7 +13,7 @@ public class ClientView extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private Client model;
 	
-	private JList<String> userList;
+	private JList userList;
 	private JTextField userName;
 	private JTextField message;
 	private JTextArea chat;
@@ -26,6 +26,7 @@ public class ClientView extends JFrame {
 	private JScrollPane chatScroll;
 	private JScrollPane userListScroll;
 	private JScrollPane messageScroll;
+	private DefaultListModel usernameList;
 	
 	private JFrame dmFrame;
 	private JPanel dmPanel;
@@ -54,7 +55,6 @@ public class ClientView extends JFrame {
 	}
 	
 	private void mainChatInit() {
-		userList = new JList<String>(); //add the usernames to the JList as a parameter
 		userName = new JTextField();
 		message = new JTextField();
 		chat = new JTextArea();
@@ -67,6 +67,8 @@ public class ClientView extends JFrame {
 		chatScroll = new JScrollPane();
 		userListScroll = new JScrollPane();
 		messageScroll = new JScrollPane();
+		usernameList = new DefaultListModel();
+		userList = new JList(usernameList);
 		
 		userName.setPreferredSize(new Dimension(200,30));
 		chatScroll.setPreferredSize(new Dimension(600,400));
@@ -81,10 +83,14 @@ public class ClientView extends JFrame {
 		sendMessage.setEnabled(false);
 		chat.setEditable(false);
 		message.setEnabled(false);
+		userList.setVisible(false);
+		chat.setVisible(false);
 			
 		configPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		chatPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 			
+		usernameList.addElement("GLOBAL");
+		
 		configPanel.add(usernameLabel);
 		configPanel.add(userName);
 		configPanel.add(login);

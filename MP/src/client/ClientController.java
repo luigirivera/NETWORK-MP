@@ -37,7 +37,7 @@ public class ClientController {
 				view.getUserName().setEnabled(false);
 				//asking server if username is ok
 				//registering user socket
-				
+				//adding the user to the usernameList
 				try {
 					model.openSocket();
 				} catch (IOException ex) {}
@@ -46,6 +46,8 @@ public class ClientController {
 				view.getLogout().setEnabled(true);
 				view.getMessage().setEnabled(true);
 				view.getSendMessage().setEnabled(true);
+				view.getUserList().setVisible(true);
+				view.getChat().setVisible(true);
 			}
 		}
 
@@ -61,6 +63,8 @@ public class ClientController {
 			view.getLogin().setEnabled(true);
 			view.getMessage().setEnabled(false);
 			view.getSendMessage().setEnabled(false);
+			view.getUserList().setVisible(false);
+			view.getChat().setVisible(false);
 		}
 
 	}

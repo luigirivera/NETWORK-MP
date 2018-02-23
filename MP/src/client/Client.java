@@ -52,7 +52,7 @@ public class Client {
 	public void sendMessage(String text) throws IOException {
 		Message message = new Message();
 		message.setSender(this.name);
-		message.setMessage(text);
+		message.setContent(text);
 		outStream.writeObject(message);
 	}
 

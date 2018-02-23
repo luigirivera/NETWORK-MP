@@ -33,7 +33,7 @@ public class Server {
 					
 					try {
 						Socket socket = server.accept();
-						System.out.println("Client connected from:" + socket.getLocalAddress().getHostName());
+						thisServer.log("Client connected from:" + socket.getLocalAddress().getHostName());
 						ConnectionChecker checker = new ConnectionChecker(thisServer.addUser(socket), thisServer);
 						Thread ccThread = new Thread(checker);
 						ccThread.start();

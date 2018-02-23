@@ -4,14 +4,18 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyListener;
 
 import javax.swing.*;
 
 public class ClientView extends JFrame {
 	private static final long serialVersionUID = 1L;
+	private static final String DM_TITLE_TEXT = " - MonoChrome";
+	
 	private Client model;
 	
-	private JList<String> userList;
+	private JList userList;
 	private JTextField userName;
 	private JTextField message;
 	private JTextArea chat;
@@ -24,11 +28,15 @@ public class ClientView extends JFrame {
 	private JScrollPane chatScroll;
 	private JScrollPane userListScroll;
 	private JScrollPane messageScroll;
+	private DefaultListModel usernameList;
 	
 	private JFrame dmFrame;
+	private JPanel dmPanel;
 	private JTextField dmMessage;
 	private JButton dmSend;
 	private JTextArea dmChat;
+	private JScrollPane dmChatScroll;
+	private JScrollPane dmMessageScroll;
 	
 	public ClientView(Client model) {
 		super("MonoChrome");
@@ -36,14 +44,19 @@ public class ClientView extends JFrame {
 		this.model = model;
 		
 		init();
-		setSize(765,600);
+		setSize(750,583);
 		setLayout(null);
 		setVisible(true);
 		setResizable(false);
 	}
-	
+
+//------------INITIALIZERS------------
 	public void init() {
-		userList = new JList<String>(); //add the usernames to the JList as a parameter
+		this.mainChatInit();
+		this.dmChatInit();
+	}
+	
+	private void mainChatInit() {
 		userName = new JTextField();
 		message = new JTextField();
 		chat = new JTextArea();
@@ -56,8 +69,13 @@ public class ClientView extends JFrame {
 		chatScroll = new JScrollPane();
 		userListScroll = new JScrollPane();
 		messageScroll = new JScrollPane();
+		usernameList = new DefaultListModel();
+		userList = new JList(usernameList);
 		
 		userName.setPreferredSize(new Dimension(200,30));
+		chatScroll.setPreferredSize(new Dimension(600,400));
+		userListScroll.setPreferredSize(new Dimension(100,400));
+		messageScroll.setPreferredSize(new Dimension(600,40));
 		
 		chatScroll.setViewportView(chat);
 		userListScroll.setViewportView(userList);
@@ -67,14 +85,14 @@ public class ClientView extends JFrame {
 		sendMessage.setEnabled(false);
 		chat.setEditable(false);
 		message.setEnabled(false);
-		
-		chatScroll.setPreferredSize(new Dimension(600,400));
-		userListScroll.setPreferredSize(new Dimension(100,400));
-		messageScroll.setPreferredSize(new Dimension(600,40));
-		
+		userList.setVisible(false);
+		chat.setVisible(false);
+			
 		configPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		chatPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 			
+		usernameList.addElement("GLOBAL");
+		
 		configPanel.add(usernameLabel);
 		configPanel.add(userName);
 		configPanel.add(login);
@@ -90,8 +108,41 @@ public class ClientView extends JFrame {
 		
 		add(configPanel);
 		add(chatPanel);
-		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+	}
+
+	private void dmChatInit() {
+		dmFrame = new JFrame("<name> - MonoChrome"); //replace <name> with getting the name chosen
+		dmPanel = new JPanel();
+		dmMessage = new JTextField();
+		dmSend = new JButton("Send");
+		dmChat = new JTextArea();
+		dmChatScroll = new JScrollPane();
+		dmMessageScroll = new JScrollPane();
+		
+		dmChatScroll.setViewportView(dmChat);
+		dmMessageScroll.setViewportView(dmMessage);
+		
+		dmChatScroll.setPreferredSize(new Dimension(480,420));
+		dmMessageScroll.setPreferredSize(new Dimension(400,40));
+		
+		dmChat.setEditable(false);
+		
+		dmPanel.add(dmChatScroll);
+		dmPanel.add(dmMessageScroll);
+		dmPanel.add(dmSend);
+		dmFrame.add(dmPanel);
+		
+		dmPanel.setBounds(0,0,500,478);
+		dmFrame.setSize(500,500);
+		dmFrame.setLayout(null);
+		dmFrame.setResizable(false);
+		dmFrame.setVisible(true);
+	}
+
+//------------LISTENERS------------//
+	public void addLoginBoxListener(KeyListener e) {
+		userName.addKeyListener(e);
 	}
 	
 	public void addLoginListener(ActionListener e) {
@@ -106,6 +157,12 @@ public class ClientView extends JFrame {
 		sendMessage.addActionListener(e);
 	}
 	
+	public void addMessageBoxListener(KeyListener e, FocusListener f) {
+		message.addKeyListener(e);
+		message.addFocusListener(f);
+	}
+
+//------------GETTERS AND SETTERS------------//
 	public Client getModel() {
 		return model;
 	}
@@ -216,5 +273,29 @@ public class ClientView extends JFrame {
 
 	public void setMessageScroll(JScrollPane messageScroll) {
 		this.messageScroll = messageScroll;
+	}
+
+	public JFrame getDmFrame() {
+		return dmFrame;
+	}
+
+	public void setDmFrame(JFrame dmFrame) {
+		this.dmFrame = dmFrame;
+	}
+
+	public JTextField getDmMessage() {
+		return dmMessage;
+	}
+
+	public void setDmMessage(JTextField dmMessage) {
+		this.dmMessage = dmMessage;
+	}
+
+	public JButton getDmSend() {
+		return dmSend;
+	}
+
+	public void setDmSend(JButton dmSend) {
+		this.dmSend = dmSend;
 	}
 }

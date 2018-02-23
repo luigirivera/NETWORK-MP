@@ -17,7 +17,7 @@ public class ConnectionChecker implements Runnable {
 	}
 	
 	public boolean checkConnection() throws IOException {
-		if(!connection.getSocket().isConnected())
+		if(!connection.getSocket().getInetAddress().isReachable(500))
 		{
 			connection.getSocket().close();
 			server.getConnections().remove(connection);

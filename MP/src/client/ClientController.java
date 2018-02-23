@@ -129,7 +129,9 @@ public class ClientController {
 		@Override
 		public void keyPressed(KeyEvent e) {
 			if(e.getKeyCode() == KeyEvent.VK_ENTER && !view.getMessage().getText().isEmpty()) {
-				//push the message text
+				try {
+					model.sendMessage(view.getMessage().getText());
+				} catch (IOException ex) {}
 				view.getMessage().setText("");				
 			}
 		}

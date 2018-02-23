@@ -34,7 +34,8 @@ public class ClientController {
 				
 				try {
 					model.openSocket();
-				} catch (IOException ex) {}
+					model.sendMessage(view.getUserName().getText());
+				} catch (IOException ex) { ex.printStackTrace(); }
 				
 				
 				view.getLogout().setEnabled(true);
@@ -50,7 +51,9 @@ public class ClientController {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			view.getLogout().setEnabled(false);
-			//disconnect from the server
+			try {
+				model.closeSocket();
+			} catch (IOException ex) { ex.printStackTrace(); }
 			view.getUserName().setEnabled(true);
 			view.getLogin().setEnabled(true);
 			view.getMessage().setEnabled(false);

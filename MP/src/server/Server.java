@@ -59,9 +59,9 @@ public class Server {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			try {
+			/*try {
 				server.close();
-			} catch (IOException e) {}
+			} catch (IOException e) {}*/
 		}
 
 	}
@@ -80,6 +80,9 @@ public class Server {
 		 * print.flush(); }
 		 */
 
+		//debug
+		System.out.println(uc.getUser().getName());
+		
 		get.close();
 		return uc;
 	}

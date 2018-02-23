@@ -1,10 +1,11 @@
 package client;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 public class Client {
-	private final static String DEFAULT_SERVER_ADDRESS = "localhost";
+	private final static String DEFAULT_SERVER_ADDRESS = "127.0.0.1";
 	private final static int DEFAULT_SERVER_PORT = 5000;
 	
 	private Socket socket;
@@ -26,7 +27,13 @@ public class Client {
 		if (socket!=null)
 			socket.close();
 	}
-
+	
+	public void sendMessage(String msg) throws IOException {
+		PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
+		pw.println(msg);
+		pw.close();
+	}
+	
 	public Socket getSocket() {
 		return socket;
 	}

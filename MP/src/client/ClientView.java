@@ -46,7 +46,8 @@ public class ClientView extends JFrame {
 		setVisible(true);
 		setResizable(false);
 	}
-	
+
+//------------INITIALIZERS------------
 	public void init() {
 		this.mainChatInit();
 		this.dmChatInit();
@@ -103,7 +104,7 @@ public class ClientView extends JFrame {
 	}
 
 	private void dmChatInit() {
-		dmFrame = new JFrame("<name> - MonoChrome");
+		dmFrame = new JFrame("<name> - MonoChrome"); //replace <name> with getting the name chosen
 		dmPanel = new JPanel();
 		dmMessage = new JTextField();
 		dmSend = new JButton("Send");
@@ -130,6 +131,7 @@ public class ClientView extends JFrame {
 		dmFrame.setResizable(false);
 		dmFrame.setVisible(true);
 	}
+
 //------------LISTENERS------------//
 	public void addLoginListener(ActionListener e) {
 		login.addActionListener(e);

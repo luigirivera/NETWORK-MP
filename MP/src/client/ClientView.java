@@ -12,6 +12,7 @@ import javax.swing.*;
 public class ClientView extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static final String DM_TITLE_TEXT = " - MonoChrome";
+	private String placeholderName = "Message";
 	
 	private Client model;
 	
@@ -90,8 +91,9 @@ public class ClientView extends JFrame {
 			
 		configPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		chatPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-			
-		usernameList.addElement("GLOBAL");
+		
+		message.setText(placeholderName);
+		message.setForeground(Color.GRAY);
 		
 		configPanel.add(usernameLabel);
 		configPanel.add(userName);
@@ -160,6 +162,15 @@ public class ClientView extends JFrame {
 	public void addMessageBoxListener(KeyListener e, FocusListener f) {
 		message.addKeyListener(e);
 		message.addFocusListener(f);
+	}
+	
+	public void addDMSendMessageListener(ActionListener e) {
+		dmSend.addActionListener(e);
+	}
+	
+	public void addDMMessageBoxListener(KeyListener e, FocusListener f) {
+		dmMessage.addKeyListener(e);
+		dmMessage.addFocusListener(f);
 	}
 
 //------------GETTERS AND SETTERS------------//

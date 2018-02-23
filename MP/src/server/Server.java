@@ -6,10 +6,6 @@ import java.util.*;
 
 public class Server {
 	private ServerSocket server;
-	public void setServer(ServerSocket server) {
-		this.server = server;
-	}
-
 	private List<UserConnection> connections;
 	private List<ServerObserver> observers;
 	private SocketListen socketListen;
@@ -17,6 +13,7 @@ public class Server {
 	public final static int PORT = 5000;
 
 	public Server() {
+		
 		connections = new ArrayList<UserConnection>();
 		observers = new ArrayList<ServerObserver>();
 		
@@ -34,15 +31,17 @@ public class Server {
 		public void run() {
 			try {
 				while (true) {
+					
 					Socket socket = server.accept();
-
+					
 					thisServer.log("Client connected from:" + socket.getLocalAddress().getHostName());
 
 					ConnectionChecker checker = new ConnectionChecker(thisServer.addUser(socket), thisServer);
 					Thread ccThread = new Thread(checker);
 					ccThread.start();
-				} 
-			} catch (Exception e) {}
+				}
+				
+			} catch (Exception e) {e.printStackTrace();}
 			
 		}
 		

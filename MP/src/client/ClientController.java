@@ -114,7 +114,9 @@ public class ClientController {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if(!view.getMessage().getText().isEmpty()) {
-				//push the message text
+				try {
+					model.sendMessage(view.getMessage().getText());
+				} catch (IOException ex) {}
 				view.getMessage().setText(placeholderName);
 				view.getMessage().setForeground(Color.GRAY);
 			}

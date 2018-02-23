@@ -16,13 +16,15 @@ public class ConnectionChecker implements Runnable {
 		this.server = server;
 	}
 	
-	public void checkConnection() throws IOException {
+	public boolean checkConnection() throws IOException {
 		if(!connection.getSocket().isConnected())
 		{
 			connection.getSocket().close();
 			server.getConnections().remove(connection);
 			server.blastMessage(connection.getUser().getName() + " disconnected");
+			return false;
 		}
+		return true;
 	}
 
 	@Override
@@ -31,12 +33,16 @@ public class ConnectionChecker implements Runnable {
 			input = new Scanner(connection.getSocket().getInputStream());
 			output = new PrintWriter(connection.getSocket().getOutputStream());
 			
-			while(true)
+			while(checkConnection())
 			{
-				checkConnection();
+				
+				//debug
+				System.out.println("Debug");
 				
 				if(input.hasNext())
 				{
+					//debug
+					System.out.println("Debug2");
 					String message = input.nextLine();
 					server.blastMessage(connection.getUser().getName() + ": " + message);
 					server.log(connection.getUser().getName() + ": " + message);

@@ -37,7 +37,7 @@ public class Server {
 						ConnectionChecker checker = new ConnectionChecker(thisServer.addUser(socket), thisServer);
 						Thread ccThread = new Thread(checker);
 						ccThread.start();
-					} catch (Exception e) {}
+					} catch (Exception e) {e.printStackTrace();}
 				}
 		}
 		
@@ -78,7 +78,7 @@ public class Server {
 		//debug
 		System.out.println(uc.getUser().getName());
 		
-		get.close();
+		//get.close();
 		return uc;
 	}
 	
@@ -91,6 +91,8 @@ public class Server {
 				print.flush();
 			} catch (IOException e) { e.printStackTrace(); }
 		}
+		//debug
+		System.out.println(message);
 	}
 
 	public void attach(ServerObserver obs) {

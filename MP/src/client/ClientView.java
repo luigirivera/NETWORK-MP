@@ -60,7 +60,7 @@ public class ClientView extends JFrame {
 	private void mainChatInit() {
 		userName = new JTextField();
 		message = new JTextField();
-		chat = new JTextArea();
+		chat = new JTextArea("");
 		sendMessage = new JButton("Send");
 		login = new JButton("Login");
 		logout = new JButton("Logout");
@@ -171,6 +171,11 @@ public class ClientView extends JFrame {
 	public void addDMMessageBoxListener(KeyListener e, FocusListener f) {
 		dmMessage.addKeyListener(e);
 		dmMessage.addFocusListener(f);
+	}
+	
+//------------UPDATE METHODS------------//
+	public void appendChat(String text) {
+		chat.setText(chat.getText()+'\n'+text);
 	}
 
 //------------GETTERS AND SETTERS------------//

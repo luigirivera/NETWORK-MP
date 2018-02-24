@@ -1,5 +1,6 @@
 package server;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -86,9 +87,7 @@ public class Server {
 					server.blastMessage(message);
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
 			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
 			} finally {
 				try {
 					server.closeConnection(connection);
@@ -128,8 +127,11 @@ public class Server {
 		this.log(message);
 		for (UserConnection connection : connections) {
 			try {
+				connection.getOutStream().flush();
+				connection.getOutStream().reset();
 				connection.getOutStream().writeObject(message);
 				connection.getOutStream().flush();
+				connection.getOutStream().reset();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

@@ -4,25 +4,62 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
+import shared.ConcreteMessageFormatter;
 import shared.Message;
+import shared.MessageFormatter;
 
 public class Client {
 	private final static String DEFAULT_SERVER_ADDRESS = "localhost";
 	private final static int DEFAULT_SERVER_PORT = 5000;
+	private final static int RECEIVED_SIZE = 100;
 
 	private String name;
+
+	private List<Message> received;
 
 	private Socket socket;
 	private String serverAddress;
 	private int serverPort;
+	
+	private MessageFormatter messageFormatter;
 
 	private ObjectInputStream inStream;
 	private ObjectOutputStream outStream;
 
+	private ClientView view;
+
 	public Client() {
 		this.serverAddress = DEFAULT_SERVER_ADDRESS;
 		this.serverPort = DEFAULT_SERVER_PORT;
+		this.received = new ArrayList<Message>(RECEIVED_SIZE);
+		this.messageFormatter = new ConcreteMessageFormatter();
+	}
+
+	class MessageReceiver implements Runnable {
+		private Client client;
+
+		public MessageReceiver(Client client) {
+			this.client = client;
+		}
+
+		public void run() {
+			try {
+				while (true) {
+					client.readMessage();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					client.closeSocket();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	public void openSocket() throws IOException {
@@ -30,6 +67,8 @@ public class Client {
 			closeSocket();
 		socket = new Socket(serverAddress, serverPort);
 		this.initStreams();
+		Thread thread = new Thread(new MessageReceiver(this));
+		thread.start();
 	}
 
 	private void initStreams() throws IOException {
@@ -44,10 +83,22 @@ public class Client {
 			socket.close();
 		}
 	}
-	
+
 	private void closeStreams() throws IOException {
 		inStream.close();
 		outStream.close();
+	}
+
+	public boolean isReceivedFull() {
+		return received.size() == RECEIVED_SIZE;
+	}
+
+	public void readMessage() throws IOException, ClassNotFoundException {
+		Message message = (Message) inStream.readObject();
+		if (isReceivedFull())
+			received.remove(0);
+		received.add(message);
+		this.updateView(message);
 	}
 
 	public void sendMessage(String text) throws IOException {
@@ -61,12 +112,24 @@ public class Client {
 		outStream.reset();
 	}
 
+	public void updateView(Message message) {
+		view.appendChat(messageFormatter.format(message));
+	}
+
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public ClientView getView() {
+		return view;
+	}
+
+	public void setView(ClientView view) {
+		this.view = view;
 	}
 
 }

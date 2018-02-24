@@ -179,7 +179,7 @@ public class ClientView extends JFrame {
 	
 //------------UPDATE METHODS------------//
 	public void appendChat(String text) {
-		chat.setText(chat.getText()+'\n'+text);
+		chat.setText(chat.getText()+text+'\n');
 		chat.setCaretPosition(chat.getDocument().getLength());
 	}
 	

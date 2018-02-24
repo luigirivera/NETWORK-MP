@@ -15,7 +15,7 @@ public class ServerMessageRouter implements MessageRouter {
 	public void route(Message message) {
 		if(message instanceof DirectMessage) {
 			try {
-				UserConnection dest = server.getConnections().get(((DirectMessage)message).getReceiver());
+				UserConnection dest = server.getConnections().get(((DirectMessage)message).getRecipient());
 				server.sendMessage(message, dest);
 			} catch (NullPointerException e) { e.printStackTrace(); }
 		} else {

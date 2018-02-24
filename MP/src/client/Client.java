@@ -22,20 +22,21 @@ public class Client {
 	private Socket socket;
 	private String serverAddress;
 	private int serverPort;
-	
+
 	private MessageFormatter messageFormatter;
 	private MessageRouter messageRouter;
 
 	private ObjectInputStream inStream;
 	private ObjectOutputStream outStream;
 
-	private ClientView view;
+	private List<ClientObserver> observers;
 
 	public Client() {
 		this.serverAddress = DEFAULT_SERVER_ADDRESS;
 		this.serverPort = DEFAULT_SERVER_PORT;
 		this.messageFormatter = new ConcreteMessageFormatter();
 		this.messageRouter = new ClientMessageRouter(this);
+		this.observers = new ArrayList<ClientObserver>();
 	}
 
 	class MessageReceiver implements Runnable {
@@ -81,7 +82,6 @@ public class Client {
 		if (socket != null) {
 			this.closeStreams();
 			socket.close();
-			this.updateView();
 		}
 	}
 
@@ -92,9 +92,9 @@ public class Client {
 
 	public void readMessage() throws IOException, ClassNotFoundException {
 		Message message = (Message) inStream.readObject();
-		this.updateView(message);
+		messageRouter.route(message);
 	}
-	
+
 	public void sendMessage(Message message) throws IOException {
 		message.setSender(this.name);
 		outStream.flush();
@@ -103,28 +103,28 @@ public class Client {
 		outStream.flush();
 		outStream.reset();
 	}
-	
-	//dm
+
+	// dm
 	public void sendMessage(String text, String destUser) throws IOException {
 		DirectMessage message = new DirectMessage();
 		message.setContent(text);
-		message.setReceiver(destUser);
+		message.setRecipient(destUser);
 		this.sendMessage(message);
 	}
 
-	//global
+	// global
 	public void sendMessage(String text) throws IOException {
 		Message message = new Message();
 		message.setContent(text);
 		this.sendMessage(message);
 	}
 	
-	public void updateView() {
-		view.clearChat();
+	public void attach(ClientObserver obs) {
+		this.observers.add(obs);
 	}
-
-	public void updateView(Message message) {
-		view.appendChat(messageFormatter.format(message));
+	
+	public void detach(ClientObserver obs) {
+		this.observers.remove(obs);
 	}
 
 	public String getName() {
@@ -135,12 +135,8 @@ public class Client {
 		this.name = name;
 	}
 
-	public ClientView getView() {
-		return view;
-	}
-
-	public void setView(ClientView view) {
-		this.view = view;
+	public List<ClientObserver> getObservers() {
+		return observers;
 	}
 
 }

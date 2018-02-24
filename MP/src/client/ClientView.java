@@ -2,19 +2,32 @@ package client;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+import shared.ConcreteMessageFormatter;
+import shared.Message;
+import shared.MessageFormatter;
 
 public class ClientView extends JFrame implements ClientObserver {
 	private static final long serialVersionUID = 1L;
 	private String placeholderName = "Message";
 
 	private Client model;
+	private MessageFormatter messageFormatter;
 
 	private JList userList;
 	private JTextField userName;
@@ -35,6 +48,7 @@ public class ClientView extends JFrame implements ClientObserver {
 		super("MonoChrome");
 
 		this.model = model;
+		this.messageFormatter = new ConcreteMessageFormatter();
 
 		init();
 		setSize(750, 583);
@@ -128,8 +142,8 @@ public class ClientView extends JFrame implements ClientObserver {
 
 	// ------------UPDATE METHODS------------//
 	@Override
-	public void appendChat(String text) {
-		chat.setText(chat.getText() + text + '\n');
+	public void appendChat(Message message) {
+		chat.setText(chat.getText() + messageFormatter.format(message) + '\n');
 		chat.setCaretPosition(chat.getDocument().getLength());
 	}
 

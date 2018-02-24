@@ -12,6 +12,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import shared.Message;
+
 public class ClientDMView extends JFrame implements ClientObserver {
 	private static final long serialVersionUID = 1L;
 	private static final String placeholderName = "Message";
@@ -77,7 +79,7 @@ public class ClientDMView extends JFrame implements ClientObserver {
 
 	// ------------UPDATE METHODS------------//
 	@Override
-	public void appendChat(String text) {
+	public void appendChat(Message message) {
 		// TODO Auto-generated method stub
 
 	}

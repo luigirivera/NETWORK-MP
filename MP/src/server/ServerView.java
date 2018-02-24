@@ -41,7 +41,7 @@ public class ServerView extends JFrame implements ServerObserver {
 	@Override
 	public void update(String message) {
 		logsArea.append(message + "\n");
-		
+		logsArea.setCaretPosition(logsArea.getDocument().getLength());
 	}
 	
 	public void addWindowListening(WindowListener e) {

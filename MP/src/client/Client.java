@@ -82,6 +82,7 @@ public class Client {
 		if (socket != null) {
 			this.closeStreams();
 			socket.close();
+			name = null;
 		}
 	}
 
@@ -118,13 +119,21 @@ public class Client {
 		message.setContent(text);
 		this.sendMessage(message);
 	}
-	
+
 	public void attach(ClientObserver obs) {
 		this.observers.add(obs);
 	}
-	
+
 	public void detach(ClientObserver obs) {
 		this.observers.remove(obs);
+	}
+
+	public Socket getSocket() {
+		return socket;
+	}
+
+	public void setSocket(Socket socket) {
+		this.socket = socket;
 	}
 
 	public String getName() {

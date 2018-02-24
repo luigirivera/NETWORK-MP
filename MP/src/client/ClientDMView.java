@@ -33,7 +33,7 @@ public class ClientDMView extends JFrame implements ClientObserver {
 	private JScrollPane dmMessageScroll;
 
 	public ClientDMView(Client model, String destUser) {
-		super(String.format("<%s> - MonoChrome", destUser));
+		super(String.format("%s - MonoChrome", destUser));
 
 		this.model = model;
 		this.destUser = destUser;

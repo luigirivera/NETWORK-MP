@@ -119,7 +119,7 @@ public class Server {
 	
 	private boolean isUsernameUnique(String username) {
         for(UserConnection x: connections) {
-            if(x.getUser().getName().equals(username)) {
+            if(x.getUser().getName().equalsIgnoreCase(username)) {
                    return false;
             }
         }

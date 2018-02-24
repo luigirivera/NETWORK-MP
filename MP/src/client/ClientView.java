@@ -180,7 +180,8 @@ public class ClientView extends JFrame implements ClientObserver {
 //------------UPDATE METHODS------------//
 	@Override
 	public void appendChat(String text) {
-		chat.setText(chat.getText()+'\n'+text);
+		chat.setText(chat.getText()+text+'\n');
+		chat.setCaretPosition(chat.getDocument().getLength());
 	}
 	
 	@Override

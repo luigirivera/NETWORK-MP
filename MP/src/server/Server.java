@@ -71,7 +71,7 @@ public class Server {
 		}
 
 		public boolean checkConnection() throws IOException {
-			if (!connection.getSocket().getInetAddress().isReachable(2000)) {
+			if (!connection.getSocket().getInetAddress().isReachable(5000)) {
 				System.out.println("Could not reach");
 				server.closeConnection(connection);
 				return false;
@@ -82,10 +82,8 @@ public class Server {
 		public void run() {
 			try {
 				while (this.checkConnection()) {
-					if (connection.getInStream().available() > 0) {
-						Message message = connection.readMessage();
-						server.blastMessage(message);
-					}
+					Message message = connection.readMessage();
+					server.blastMessage(message);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -127,7 +125,7 @@ public class Server {
 		 * PrintWriter(socket.getOutputStream()); print.println(message); print.flush();
 		 * } catch (IOException e) { e.printStackTrace(); } }
 		 */
-		System.out.println(message.getContent());
+		this.log(message);
 		for (UserConnection connection : connections) {
 			try {
 				connection.getOutStream().writeObject(message);
@@ -186,6 +184,7 @@ class UserConnection {
 		try {
 			outStream = new ObjectOutputStream(socket.getOutputStream());
 			inStream = new ObjectInputStream(socket.getInputStream());
+			outStream.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

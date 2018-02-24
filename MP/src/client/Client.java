@@ -35,6 +35,7 @@ public class Client {
 	private void initStreams() throws IOException {
 		outStream = new ObjectOutputStream(socket.getOutputStream());
 		inStream = new ObjectInputStream(socket.getInputStream());
+		outStream.flush();
 	}
 
 	public void closeSocket() throws IOException {
@@ -53,8 +54,11 @@ public class Client {
 		Message message = new Message();
 		message.setSender(this.name);
 		message.setContent(text);
+		outStream.flush();
+		outStream.reset();
 		outStream.writeObject(message);
 		outStream.flush();
+		outStream.reset();
 	}
 
 	public String getName() {

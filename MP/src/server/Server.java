@@ -118,17 +118,8 @@ public class Server {
 	}
 
 	public void blastMessage(Message message) {
-		this.log(message);
 		for (UserConnection connection : connections) {
-			try {
-				connection.getOutStream().flush();
-				connection.getOutStream().reset();
-				connection.getOutStream().writeObject(message);
-				connection.getOutStream().flush();
-				connection.getOutStream().reset();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			this.sendMessage(message, connection);
 		}
 	}
 
@@ -137,6 +128,25 @@ public class Server {
 		message.setSender("Server");
 		message.setContent(content);
 		this.blastMessage(message);
+	}
+	
+	public void sendMessage(Message message, UserConnection dest) {
+		try {
+			dest.getOutStream().flush();
+			dest.getOutStream().reset();
+			dest.getOutStream().writeObject(message);
+			dest.getOutStream().flush();
+			dest.getOutStream().reset();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void sendMessage(String content, UserConnection dest) {
+		Message message = new Message();
+		message.setSender("Server");
+		message.setContent(content);
+		this.sendMessage(message, dest);
 	}
 
 	public void attach(ServerObserver obs) {
@@ -222,4 +232,8 @@ class UserConnection {
 		this.outStream = outStream;
 	}
 
+}
+
+class MessageSorter {
+	
 }

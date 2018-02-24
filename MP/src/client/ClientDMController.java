@@ -52,6 +52,7 @@ public class ClientDMController {
 		public void keyPressed(KeyEvent e) {
 			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 				sendMessage();
+				view.getDmMessage().setForeground(Color.BLACK);
 			}
 		}
 

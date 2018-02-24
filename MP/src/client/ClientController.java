@@ -34,9 +34,6 @@ public class ClientController {
 		this.view.addUserListListener(new UserListListener());
 		
 		this.view.addLoginBoxListener(new LoginBoxListener());
-		
-		this.view.addDMMessageBoxListener(new DMMessageBoxKeyListener(), new DMMessageBoxFocusListener());
-		this.view.addDMSendMessageListener(new DMSendMessageListener());
 	}
 	
 	class LoginBoxListener implements KeyListener{
@@ -185,52 +182,6 @@ public class ClientController {
 		@Override
 		public void mouseReleased(MouseEvent arg0) {}
 		
-	}
-	
-	class DMMessageBoxFocusListener implements FocusListener{
-		@Override
-		public void focusGained(FocusEvent arg0) {
-			if (view.getDmMessage().getText().equals(placeholderName)) {
-				view.getDmMessage().setText("");
-				view.getDmMessage().setForeground(Color.BLACK);
-			}
-		}
-
-		@Override
-		public void focusLost(FocusEvent arg0) {
-			if (view.getDmMessage().getText().isEmpty()) {
-				view.getDmMessage().setForeground(Color.GRAY);
-				view.getDmMessage().setText(placeholderName);
-			}
-			
-		}		
-	}
-	
-	class DMMessageBoxKeyListener implements KeyListener{
-		@Override
-		public void keyPressed(KeyEvent e) {
-			if(e.getKeyCode() == KeyEvent.VK_ENTER && !view.getDmMessage().getText().isEmpty()) {
-				//push the message text
-				view.getDmMessage().setText("");				
-			}
-		}
-
-		@Override
-		public void keyReleased(KeyEvent arg0) {}
-
-		@Override
-		public void keyTyped(KeyEvent arg0) {}		
-	}
-	
-	class DMSendMessageListener implements ActionListener{
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if(!view.getDmMessage().getText().isEmpty() && !view.getDmMessage().getText().equals(placeholderName)) {
-				//push the message text
-				view.getDmMessage().setText(placeholderName);
-				view.getDmMessage().setForeground(Color.GRAY);
-			}
-		}		
 	}
 
 }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import shared.ConcreteMessageFormatter;
+import shared.DirectMessage;
 import shared.Message;
 import shared.MessageFormatter;
 import shared.MessageRouter;
@@ -104,16 +105,29 @@ public class Client {
 		received.add(message);
 		this.updateView(message);
 	}
-
-	public void sendMessage(String text) throws IOException {
-		Message message = new Message();
+	
+	public void sendMessage(Message message) throws IOException {
 		message.setSender(this.name);
-		message.setContent(text);
 		outStream.flush();
 		outStream.reset();
 		outStream.writeObject(message);
 		outStream.flush();
 		outStream.reset();
+	}
+	
+	//dm
+	public void sendMessage(String text, String destUser) throws IOException {
+		DirectMessage message = new DirectMessage();
+		message.setContent(text);
+		message.setReceiver(destUser);
+		this.sendMessage(message);
+	}
+
+	//global
+	public void sendMessage(String text) throws IOException {
+		Message message = new Message();
+		message.setContent(text);
+		this.sendMessage(message);
 	}
 	
 	public void updateView() {

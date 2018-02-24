@@ -100,15 +100,29 @@ public class Server {
 
 	private UserConnection addUser(Socket socket) throws IOException, ClassNotFoundException {
 		// do unique name checking later...
+                boolean unique = true;
+                
 		UserConnection uc = new UserConnection(new User(), socket);
 		Message initMessage = (Message) uc.getInStream().readObject();
 		uc.getUser().setName(initMessage.getSender());
-		connections.add(uc);
-		this.blastMessage(String.format("%s joined the chat. Say hi!", uc.getUser().getName()));
-		this.log(uc.getUser().getName() + " connected from: " + socket.getRemoteSocketAddress());
-		Thread thread = new Thread(new ConnectionMaintainer(this, uc));
-		thread.start();
-		return uc;
+                
+                for(UserConnection x: connections) {
+                    if(x.getUser().getName().equals(initMessage.getSender())) {
+                           unique = false;
+                    }
+                }
+                if(unique == true) {
+                    connections.add(uc);
+                    this.blastMessage(String.format("%s joined the chat. Say hi!", uc.getUser().getName()));
+                    this.log(uc.getUser().getName() + " connected from: " + socket.getRemoteSocketAddress());
+                    Thread thread = new Thread(new ConnectionMaintainer(this, uc));
+                    thread.start();
+                }
+                else {
+                    System.out.println("Username already taken!");
+                }
+
+                return uc;                    
 	}
 
 	public void closeConnection(UserConnection connection) throws IOException {

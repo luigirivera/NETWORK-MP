@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
 
 import javax.swing.*;
 
@@ -172,6 +173,10 @@ public class ClientView extends JFrame {
 		dmMessage.addFocusListener(f);
 	}
 	
+	public void addUserListListener(MouseListener e) {
+		userList.addMouseListener(e);
+	}
+	
 //------------UPDATE METHODS------------//
 	public void appendChat(String text) {
 		chat.setText(chat.getText()+'\n'+text);
@@ -316,5 +321,49 @@ public class ClientView extends JFrame {
 
 	public void setDmSend(JButton dmSend) {
 		this.dmSend = dmSend;
+	}
+	
+	public DefaultListModel getUsernameList() {
+		return usernameList;
+	}
+
+	public void setUsernameList(DefaultListModel usernameList) {
+		this.usernameList = usernameList;
+	}
+
+	public JPanel getDmPanel() {
+		return dmPanel;
+	}
+
+	public void setDmPanel(JPanel dmPanel) {
+		this.dmPanel = dmPanel;
+	}
+
+	public JTextArea getDmChat() {
+		return dmChat;
+	}
+
+	public void setDmChat(JTextArea dmChat) {
+		this.dmChat = dmChat;
+	}
+
+	public JScrollPane getDmChatScroll() {
+		return dmChatScroll;
+	}
+
+	public void setDmChatScroll(JScrollPane dmChatScroll) {
+		this.dmChatScroll = dmChatScroll;
+	}
+
+	public JScrollPane getDmMessageScroll() {
+		return dmMessageScroll;
+	}
+
+	public void setDmMessageScroll(JScrollPane dmMessageScroll) {
+		this.dmMessageScroll = dmMessageScroll;
+	}
+
+	public static String getDmTitleText() {
+		return DM_TITLE_TEXT;
 	}
 }

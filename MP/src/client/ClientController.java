@@ -7,7 +7,12 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
 
 public class ClientController {
 
@@ -26,6 +31,7 @@ public class ClientController {
 		this.view.addLogoutListener(new LogoutListener());
 		this.view.addSendMessageListener(new SendMessageListener());
 		this.view.addMessageBoxListener(new MessageBoxKeyListener(), new MessageBoxFocusListener());
+		this.view.addUserListListener(new UserListListener());
 		
 		this.view.addLoginBoxListener(new LoginBoxListener());
 		
@@ -151,6 +157,33 @@ public class ClientController {
 			}
 			
 		}
+		
+	}
+	
+	class UserListListener implements MouseListener{
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			JList list = view.getUserList();
+			
+			if(e.getClickCount() == 2) {
+				int index = list.locationToIndex(e.getPoint());
+				
+				//add stuff to open the DM
+			}
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent arg0) {}
+
+		@Override
+		public void mouseExited(MouseEvent arg0) {}
+
+		@Override
+		public void mousePressed(MouseEvent arg0) {}
+
+		@Override
+		public void mouseReleased(MouseEvent arg0) {}
 		
 	}
 	

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import shared.ConcreteMessageFormatter;
+import shared.DirectMessage;
 import shared.Message;
 import shared.MessageFormatter;
 import shared.MessageRouter;
@@ -113,6 +114,10 @@ public class Server {
         }
         else {
             System.out.println("Username already taken!");
+            Message msg = new Message();
+            msg.setSender("Server");
+            msg.setContent("Username already in use");
+            uc.getOutStream().writeObject(msg);
             socket.close();
         }                  
 	}

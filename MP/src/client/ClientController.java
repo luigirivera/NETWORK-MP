@@ -71,7 +71,6 @@ public class ClientController {
 				model.setName(view.getUserName().getText());
 				model.sendMessage(view.getUserName().getText());
 			} catch (IOException ex) { ex.printStackTrace(); }
-			
 			view.getLogout().setEnabled(true);
 			view.getMessage().setEnabled(true);
 			view.getSendMessage().setEnabled(true);

@@ -16,11 +16,8 @@ import shared.MessageRouter;
 public class Client {
 	private final static String DEFAULT_SERVER_ADDRESS = "localhost";
 	private final static int DEFAULT_SERVER_PORT = 5000;
-	private final static int RECEIVED_SIZE = 100;
 
 	private String name;
-
-	private List<Message> received;
 
 	private Socket socket;
 	private String serverAddress;
@@ -94,15 +91,8 @@ public class Client {
 		outStream.close();
 	}
 
-	public boolean isReceivedFull() {
-		return received.size() == RECEIVED_SIZE;
-	}
-
 	public void readMessage() throws IOException, ClassNotFoundException {
 		Message message = (Message) inStream.readObject();
-		if (isReceivedFull())
-			received.remove(0);
-		received.add(message);
 		this.updateView(message);
 	}
 	

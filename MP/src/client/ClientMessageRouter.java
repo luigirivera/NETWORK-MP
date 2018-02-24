@@ -3,6 +3,7 @@ package client;
 import shared.DirectMessage;
 import shared.Message;
 import shared.MessageRouter;
+import shared.UserListMessage;
 
 public class ClientMessageRouter implements MessageRouter {
 	private Client client;
@@ -22,6 +23,14 @@ public class ClientMessageRouter implements MessageRouter {
 				}
 			}
 			client.attach(new ClientDMView(client, ((DirectMessage) message).getRecipient()));
+		} else if (message instanceof UserListMessage) {
+			for(ClientObserver obs : client.getObservers()) {
+				if(obs instanceof ClientView) {
+					((ClientView)obs).getUsernameList().clear();
+					for(String username : ((UserListMessage)message).getUsernames())
+						((ClientView)obs).getUsernameList().addElement(username);
+				}
+			}
 		} else {
 			for(ClientObserver obs : client.getObservers()) {
 				if(obs instanceof ClientView)

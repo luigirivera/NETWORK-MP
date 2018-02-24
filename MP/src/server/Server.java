@@ -11,6 +11,7 @@ import shared.ConcreteMessageFormatter;
 import shared.Message;
 import shared.MessageFormatter;
 import shared.MessageRouter;
+import shared.UserListMessage;
 
 public class Server {
 	private ServerSocket serverSocket;
@@ -98,31 +99,31 @@ public class Server {
 		}
 	}
 
-	private UserConnection addUser(Socket socket) throws IOException, ClassNotFoundException {
-		// do unique name checking later...
-                boolean unique = true;
-                
+	private void addUser(Socket socket) throws IOException, ClassNotFoundException {
 		UserConnection uc = new UserConnection(new User(), socket);
 		Message initMessage = (Message) uc.getInStream().readObject();
-		uc.getUser().setName(initMessage.getSender());
-                
-                for(UserConnection x: connections) {
-                    if(x.getUser().getName().equals(initMessage.getSender())) {
-                           unique = false;
-                    }
-                }
-                if(unique == true) {
-                    connections.add(uc);
-                    this.blastMessage(String.format("%s joined the chat. Say hi!", uc.getUser().getName()));
-                    this.log(uc.getUser().getName() + " connected from: " + socket.getRemoteSocketAddress());
-                    Thread thread = new Thread(new ConnectionMaintainer(this, uc));
-                    thread.start();
-                }
-                else {
-                    System.out.println("Username already taken!");
-                }
-
-                return uc;                    
+        if(isUsernameUnique(initMessage.getSender())) {
+    			uc.getUser().setName(initMessage.getSender());
+            connections.add(uc);
+            this.blastMessage(String.format("%s joined the chat. Say hi!", uc.getUser().getName()));
+            this.log(uc.getUser().getName() + " connected from: " + socket.getRemoteSocketAddress());
+            this.blastUserList();
+            Thread thread = new Thread(new ConnectionMaintainer(this, uc));
+            thread.start();
+        }
+        else {
+            System.out.println("Username already taken!");
+            socket.close();
+        }                  
+	}
+	
+	private boolean isUsernameUnique(String username) {
+        for(UserConnection x: connections) {
+            if(x.getUser().getName().equals(username)) {
+                   return false;
+            }
+        }
+        return true;
 	}
 
 	public void closeConnection(UserConnection connection) throws IOException {
@@ -130,6 +131,14 @@ public class Server {
 		connections.remove(connection);
 		this.log(connection.getUser().getName() + " disconnected");
 		this.blastMessage(connection.getUser().getName() + " disconnected");
+		this.blastUserList();
+	}
+	
+	public void blastUserList() {
+		List<String> usernames = connections.getUsernames();
+		UserListMessage message = new UserListMessage();
+		message.setUsernames(usernames);
+		this.blastMessage(message);
 	}
 
 	public void blastMessage(Message message) {

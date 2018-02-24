@@ -29,7 +29,7 @@ public class ClientView extends JFrame implements ClientObserver {
 	private Client model;
 	private MessageFormatter messageFormatter;
 
-	private JList userList;
+	private JList<String> userList;
 	private JTextField userName;
 	private JTextField message;
 	private JTextArea chat;
@@ -42,7 +42,7 @@ public class ClientView extends JFrame implements ClientObserver {
 	private JScrollPane chatScroll;
 	private JScrollPane userListScroll;
 	private JScrollPane messageScroll;
-	private DefaultListModel usernameList;
+	private DefaultListModel<String> usernameList;
 
 	public ClientView(Client model) {
 		super("MonoChrome");
@@ -71,8 +71,8 @@ public class ClientView extends JFrame implements ClientObserver {
 		chatScroll = new JScrollPane();
 		userListScroll = new JScrollPane();
 		messageScroll = new JScrollPane();
-		usernameList = new DefaultListModel();
-		userList = new JList(usernameList);
+		usernameList = new DefaultListModel<String>();
+		userList = new JList<String>(usernameList);
 
 		userName.setPreferredSize(new Dimension(200, 30));
 		chatScroll.setPreferredSize(new Dimension(600, 400));
@@ -161,11 +161,11 @@ public class ClientView extends JFrame implements ClientObserver {
 		this.model = model;
 	}
 
-	public JList getUserList() {
+	public JList<String> getUserList() {
 		return userList;
 	}
 
-	public void setUserList(JList userList) {
+	public void setUserList(JList<String> userList) {
 		this.userList = userList;
 	}
 
@@ -265,11 +265,11 @@ public class ClientView extends JFrame implements ClientObserver {
 		this.messageScroll = messageScroll;
 	}
 
-	public DefaultListModel getUsernameList() {
+	public DefaultListModel<String> getUsernameList() {
 		return usernameList;
 	}
 
-	public void setUsernameList(DefaultListModel usernameList) {
+	public void setUsernameList(DefaultListModel<String> usernameList) {
 		this.usernameList = usernameList;
 	}
 }

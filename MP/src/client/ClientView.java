@@ -139,7 +139,6 @@ public class ClientView extends JFrame {
 		dmFrame.setSize(500,500);
 		dmFrame.setLayout(null);
 		dmFrame.setResizable(false);
-		dmFrame.setVisible(true);
 	}
 
 //------------LISTENERS------------//

@@ -34,7 +34,6 @@ public class Client {
 	public Client() {
 		this.serverAddress = DEFAULT_SERVER_ADDRESS;
 		this.serverPort = DEFAULT_SERVER_PORT;
-		this.received = new ArrayList<Message>(RECEIVED_SIZE);
 		this.messageFormatter = new ConcreteMessageFormatter();
 		this.messageRouter = new ClientMessageRouter(this);
 	}

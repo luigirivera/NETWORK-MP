@@ -103,6 +103,7 @@ public class Server {
 		Message initMessage = (Message) uc.getInStream().readObject();
 		uc.getUser().setName(initMessage.getSender());
 		connections.add(uc);
+		this.blastMessage(String.format("%s joined the chat. Say hi!", uc.getUser().getName()));
 		this.log(uc.getUser().getName() + " connected from: " + socket.getRemoteSocketAddress());
 		Thread thread = new Thread(new ConnectionMaintainer(this, uc));
 		thread.start();
@@ -117,12 +118,6 @@ public class Server {
 	}
 
 	public void blastMessage(Message message) {
-		/*
-		 * for (UserConnection connection : connections) { try { Socket socket =
-		 * connection.getSocket(); PrintWriter print = new
-		 * PrintWriter(socket.getOutputStream()); print.println(message); print.flush();
-		 * } catch (IOException e) { e.printStackTrace(); } }
-		 */
 		this.log(message);
 		for (UserConnection connection : connections) {
 			try {
@@ -148,7 +143,6 @@ public class Server {
 		observers.add(obs);
 	}
 
-	// equivalent of updateAll()
 	public void log(Message message) {
 		this.log(messageFormatter.format(message));
 	}

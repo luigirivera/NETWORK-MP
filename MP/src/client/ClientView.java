@@ -10,7 +10,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.*;
 
-public class ClientView extends JFrame {
+public class ClientView extends JFrame implements ClientObserver {
 	private static final long serialVersionUID = 1L;
 	private static final String DM_TITLE_TEXT = " - MonoChrome";
 	private String placeholderName = "Message";
@@ -178,10 +178,12 @@ public class ClientView extends JFrame {
 	}
 	
 //------------UPDATE METHODS------------//
+	@Override
 	public void appendChat(String text) {
 		chat.setText(chat.getText()+'\n'+text);
 	}
 	
+	@Override
 	public void clearChat() {
 		chat.setText("");
 	}

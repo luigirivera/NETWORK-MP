@@ -10,6 +10,7 @@ import java.util.List;
 import shared.ConcreteMessageFormatter;
 import shared.Message;
 import shared.MessageFormatter;
+import shared.MessageRouter;
 
 public class Client {
 	private final static String DEFAULT_SERVER_ADDRESS = "localhost";
@@ -25,6 +26,7 @@ public class Client {
 	private int serverPort;
 	
 	private MessageFormatter messageFormatter;
+	private MessageRouter messageRouter;
 
 	private ObjectInputStream inStream;
 	private ObjectOutputStream outStream;
@@ -36,6 +38,7 @@ public class Client {
 		this.serverPort = DEFAULT_SERVER_PORT;
 		this.received = new ArrayList<Message>(RECEIVED_SIZE);
 		this.messageFormatter = new ConcreteMessageFormatter();
+		this.messageRouter = new ClientMessageRouter(this);
 	}
 
 	class MessageReceiver implements Runnable {

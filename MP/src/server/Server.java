@@ -1,8 +1,6 @@
 package server;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -12,20 +10,23 @@ import java.util.List;
 import shared.ConcreteMessageFormatter;
 import shared.Message;
 import shared.MessageFormatter;
+import shared.MessageRouter;
 
 public class Server {
 	private ServerSocket serverSocket;
-	private List<UserConnection> connections;
+	private UserConnectionList connections;
 	private List<ServerObserver> observers;
-	
+
 	private MessageFormatter messageFormatter;
+	private MessageRouter messageRouter;
 
 	private final static int PORT = 5000;
 
 	public Server() {
-		connections = new ArrayList<UserConnection>();
+		connections = new UserConnectionList();
 		observers = new ArrayList<ServerObserver>();
 		messageFormatter = new ConcreteMessageFormatter();
+		messageRouter = new ServerMessageRouter(this);
 	}
 
 	public void init() {
@@ -83,7 +84,7 @@ public class Server {
 			try {
 				while (this.checkConnection()) {
 					Message message = connection.readMessage();
-					server.blastMessage(message);
+					messageRouter.route(message);
 				}
 			} catch (IOException e) {
 			} catch (ClassNotFoundException e) {
@@ -112,7 +113,7 @@ public class Server {
 
 	public void closeConnection(UserConnection connection) throws IOException {
 		connection.getSocket().close();
-		this.getConnections().remove(connection);
+		connections.remove(connection);
 		this.log(connection.getUser().getName() + " disconnected");
 		this.blastMessage(connection.getUser().getName() + " disconnected");
 	}
@@ -129,7 +130,7 @@ public class Server {
 		message.setContent(content);
 		this.blastMessage(message);
 	}
-	
+
 	public void sendMessage(Message message, UserConnection dest) {
 		try {
 			dest.getOutStream().flush();
@@ -141,7 +142,7 @@ public class Server {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void sendMessage(String content, UserConnection dest) {
 		Message message = new Message();
 		message.setSender("Server");
@@ -156,7 +157,7 @@ public class Server {
 	public void log(Message message) {
 		this.log(messageFormatter.format(message));
 	}
-	
+
 	public void log(String text) {
 		System.out.println(text);
 		for (ServerObserver ob : observers)
@@ -167,7 +168,7 @@ public class Server {
 		return serverSocket;
 	}
 
-	public List<UserConnection> getConnections() {
+	public UserConnectionList getConnections() {
 		return connections;
 	}
 
@@ -177,63 +178,35 @@ public class Server {
 
 }
 
-class UserConnection {
-	private User user;
-	private Socket socket;
-	private ObjectInputStream inStream;
-	private ObjectOutputStream outStream;
-
-	public UserConnection(User user, Socket socket) {
-		this.user = user;
-		this.socket = socket;
-		try {
-			outStream = new ObjectOutputStream(socket.getOutputStream());
-			inStream = new ObjectInputStream(socket.getInputStream());
-			outStream.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
+class UserConnectionList extends ArrayList<UserConnection>{
+	private static final long serialVersionUID = 1L;
+	
+	public UserConnection get(String name) {
+		for(UserConnection connection : this) {
+			if(connection.getUser().getName().equalsIgnoreCase(name))
+				return connection;
 		}
+		return null;
 	}
-
-	public Message readMessage() throws IOException, ClassNotFoundException {
-		Message message = (Message) this.getInStream().readObject();
-		return message;
+	
+	public boolean contains(String name) {
+		return this.get(name) != null;
 	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public Socket getSocket() {
-		return socket;
-	}
-
-	public void setSocket(Socket socket) {
-		this.socket = socket;
-	}
-
-	public ObjectInputStream getInStream() {
-		return inStream;
-	}
-
-	public void setInStream(ObjectInputStream inStream) {
-		this.inStream = inStream;
-	}
-
-	public ObjectOutputStream getOutStream() {
-		return outStream;
-	}
-
-	public void setOutStream(ObjectOutputStream outStream) {
-		this.outStream = outStream;
+	
+	public List<String> getUsernames() {
+		List<String> usernames = new ArrayList<String>();
+		for(UserConnection connection : this) {
+			usernames.add(connection.getUser().getName());
+		}
+		return usernames;
 	}
 
 }
 
-class MessageSorter {
-	
+class LimitedUserConnectionHolder extends UserConnectionList {
+	private static final long serialVersionUID = 1L;
+	// may use this eventually if we want to impose a limit on no. of users
+	// add an attribute maxSize that is passed in through constructor
+	// override add method to throw an exception if the size is at the
+	// limit already
 }

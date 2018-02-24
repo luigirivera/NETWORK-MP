@@ -66,9 +66,6 @@ public class ClientController {
 		if(!view.getUserName().getText().isEmpty()) {
 			view.getLogin().setEnabled(false);
 			view.getUserName().setEnabled(false);
-			//asking server if username is ok
-			//registering user socket
-			//adding the user to the usernameList
 			try {
 				model.openSocket();
 				model.setName(view.getUserName().getText());
@@ -161,12 +158,11 @@ public class ClientController {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			JList list = view.getUserList();
-			
-			if(e.getClickCount() == 2) {
-				int index = list.locationToIndex(e.getPoint());
-				
-				//add stuff to open the DM
+			if(e.getClickCount() == 2 && !view.getUserList().getSelectedValue().equalsIgnoreCase(model.getName())) {
+				ClientDMView newView = new ClientDMView(model, view.getUserList().getSelectedValue());
+				ClientDMController newController = new ClientDMController(model, newView);
+				newController.init();
+				model.attach(newView);
 			}
 		}
 

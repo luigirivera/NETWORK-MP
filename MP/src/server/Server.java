@@ -165,7 +165,7 @@ public class Server {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public void sendMessage(String content, UserConnection dest) {
 		Message message = new Message();
 		message.setSender("Server");

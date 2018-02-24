@@ -7,6 +7,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 
 import shared.DirectMessage;
@@ -23,6 +25,7 @@ public class ClientDMController {
 	public void init() {
 		this.view.addDMMessageBoxListener(new DMMessageBoxKeyListener(), new DMMessageBoxFocusListener());
 		this.view.addDMSendMessageListener(new DMSendMessageListener());
+		this.view.addDMWindowListener(new DMWindowListener());
 	}
 
 	class DMMessageBoxFocusListener implements FocusListener {
@@ -71,13 +74,39 @@ public class ClientDMController {
 	private void sendMessage() {
 		if (!view.getDmMessage().getText().isEmpty()
 				&& !view.getDmMessage().getText().equals(ClientDMView.getPlaceholdername())) {
-			DirectMessage msg = new DirectMessage();
 			try {
 				model.sendMessage(view.getDmMessage().getText(), view.getDestUser());
 			} catch (IOException e) { e.printStackTrace(); }
 			view.getDmMessage().setText("");
 			view.getDmMessage().setForeground(Color.GRAY);
 		}
+	}
+	
+	class DMWindowListener implements WindowListener {
+
+		@Override
+		public void windowOpened(WindowEvent e) {}
+
+		@Override
+		public void windowClosing(WindowEvent e) {
+			model.detach(view);
+		}
+
+		@Override
+		public void windowClosed(WindowEvent e) {}
+
+		@Override
+		public void windowIconified(WindowEvent e) {}
+
+		@Override
+		public void windowDeiconified(WindowEvent e) {}
+
+		@Override
+		public void windowActivated(WindowEvent e) {}
+
+		@Override
+		public void windowDeactivated(WindowEvent e) {}
+		
 	}
 
 }

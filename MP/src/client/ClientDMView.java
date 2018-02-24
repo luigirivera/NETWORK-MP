@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -12,7 +13,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import shared.ConcreteMessageFormatter;
 import shared.Message;
+import shared.MessageFormatter;
 
 public class ClientDMView extends JFrame implements ClientObserver {
 	private static final long serialVersionUID = 1L;
@@ -20,6 +23,7 @@ public class ClientDMView extends JFrame implements ClientObserver {
 
 	private Client model;
 	private String destUser;
+	private MessageFormatter messageFormatter;
 
 	private JPanel dmPanel;
 	private JTextField dmMessage;
@@ -33,6 +37,7 @@ public class ClientDMView extends JFrame implements ClientObserver {
 
 		this.model = model;
 		this.destUser = destUser;
+		this.messageFormatter = new ConcreteMessageFormatter();
 
 		init();
 		this.setSize(500, 500);
@@ -76,18 +81,26 @@ public class ClientDMView extends JFrame implements ClientObserver {
 		dmMessage.addKeyListener(e);
 		dmMessage.addFocusListener(f);
 	}
+	
+	public void addDMWindowListener(WindowListener e) {
+		this.addWindowListener(e);
+	}
 
 	// ------------UPDATE METHODS------------//
 	@Override
 	public void appendChat(Message message) {
-		// TODO Auto-generated method stub
-
+		this.appendChat(messageFormatter.format(message));
+	}
+	
+	@Override
+	public void appendChat(String text) {
+		dmChat.setText(dmChat.getText() + text + '\n');
+		dmChat.setCaretPosition(dmChat.getDocument().getLength());
 	}
 
 	@Override
 	public void clearChat() {
-		// TODO Auto-generated method stub
-
+		dmChat.setText("");
 	}
 
 	// ------------GETTERS AND SETTERS------------//

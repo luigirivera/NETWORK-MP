@@ -81,6 +81,7 @@ public class Client {
 		if (socket != null) {
 			this.closeStreams();
 			socket.close();
+			this.updateView();
 		}
 	}
 
@@ -110,6 +111,10 @@ public class Client {
 		outStream.writeObject(message);
 		outStream.flush();
 		outStream.reset();
+	}
+	
+	public void updateView() {
+		view.clearChat();
 	}
 
 	public void updateView(Message message) {

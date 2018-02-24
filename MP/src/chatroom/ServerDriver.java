@@ -1,8 +1,8 @@
 package chatroom;
 
-import java.io.IOException;
-
-import server.*;
+import server.Server;
+import server.ServerController;
+import server.ServerView;
 
 public class ServerDriver {
 

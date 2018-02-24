@@ -176,6 +176,10 @@ public class ClientView extends JFrame {
 	public void appendChat(String text) {
 		chat.setText(chat.getText()+'\n'+text);
 	}
+	
+	public void clearChat() {
+		chat.setText("");
+	}
 
 //------------GETTERS AND SETTERS------------//
 	public Client getModel() {

@@ -92,7 +92,7 @@ public class ClientController {
 			view.getMessage().setEnabled(false);
 			view.getSendMessage().setEnabled(false);
 			view.getUserList().setVisible(false);
-			view.getChat().setVisible(false);
+			view.clearChat();
 		}
 
 	}

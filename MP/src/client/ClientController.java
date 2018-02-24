@@ -109,7 +109,7 @@ public class ClientController {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(!view.getMessage().getText().isEmpty()) {
+			if(!view.getMessage().getText().isEmpty() && !view.getMessage().getText().equals(placeholderName)) {
 				try {
 					model.sendMessage(view.getMessage().getText());
 				} catch (IOException ex) {ex.printStackTrace();}
@@ -225,7 +225,7 @@ public class ClientController {
 	class DMSendMessageListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(!view.getDmMessage().getText().isEmpty()) {
+			if(!view.getDmMessage().getText().isEmpty() && !view.getDmMessage().getText().equals(placeholderName)) {
 				//push the message text
 				view.getDmMessage().setText(placeholderName);
 				view.getDmMessage().setForeground(Color.GRAY);

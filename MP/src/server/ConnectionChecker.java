@@ -9,7 +9,6 @@ public class ConnectionChecker implements Runnable {
 	private UserConnection connection;
 	private Server server;
 	private Scanner input;
-	private PrintWriter output;
 	
 	public ConnectionChecker(UserConnection connection, Server server) {
 		this.connection = connection;
@@ -30,8 +29,6 @@ public class ConnectionChecker implements Runnable {
 	@Override
 	public void run() {
 		try {
-			input = new Scanner(connection.getSocket().getInputStream());
-			output = new PrintWriter(connection.getSocket().getOutputStream());
 			
 			while(checkConnection())
 			{

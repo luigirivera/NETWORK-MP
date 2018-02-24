@@ -2,10 +2,6 @@ package server;
 
 public class User {
 	private String name;
-	
-	public User(String name) {
-		this.name = name;
-	}
 
 	public String getName() {
 		return name;
@@ -17,7 +13,7 @@ public class User {
 	
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof User && ((User)o).getName().equals(this.name);
+		return o instanceof User && ((User)o).getName().equalsIgnoreCase(this.name);
 	}
 
 }

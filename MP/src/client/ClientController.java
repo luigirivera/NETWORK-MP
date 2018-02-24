@@ -68,6 +68,7 @@ public class ClientController {
 			//adding the user to the usernameList
 			try {
 				model.openSocket();
+				model.setName(view.getUserName().getText());
 				model.sendMessage(view.getUserName().getText());
 			} catch (IOException ex) { ex.printStackTrace(); }
 			
@@ -105,7 +106,7 @@ public class ClientController {
 			if(!view.getMessage().getText().isEmpty()) {
 				try {
 					model.sendMessage(view.getMessage().getText());
-				} catch (IOException ex) {}
+				} catch (IOException ex) {ex.printStackTrace();}
 				view.getMessage().setText(placeholderName);
 				view.getMessage().setForeground(Color.GRAY);
 			}
@@ -120,7 +121,7 @@ public class ClientController {
 			if(e.getKeyCode() == KeyEvent.VK_ENTER && !view.getMessage().getText().isEmpty()) {
 				try {
 					model.sendMessage(view.getMessage().getText());
-				} catch (IOException ex) {}
+				} catch (IOException ex) {ex.printStackTrace();}
 				view.getMessage().setText("");				
 			}
 		}

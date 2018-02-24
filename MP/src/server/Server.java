@@ -1,96 +1,148 @@
 package server;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+
+import shared.ConcreteMessageFormatter;
+import shared.Message;
+import shared.MessageFormatter;
 
 public class Server {
-	private ServerSocket server;
+	private ServerSocket serverSocket;
 	private List<UserConnection> connections;
 	private List<ServerObserver> observers;
-	private SocketListen socketListen;
 	
-	public final static int PORT = 5000;
+	private MessageFormatter messageFormatter;
+
+	private final static int PORT = 5000;
 
 	public Server() {
 		connections = new ArrayList<UserConnection>();
 		observers = new ArrayList<ServerObserver>();
-		
-		socketListen = new SocketListen(this);
-	}
-	
-	class SocketListen implements Runnable{
-		private Server thisServer;
-		
-		public SocketListen(Server server) {
-			thisServer = server;
-		}
-		
-		@Override
-		public void run() {
-				while (true) {
-					try {
-						Socket socket = server.accept();
-						thisServer.log("Client connected from: " + socket.getRemoteSocketAddress());
-						ConnectionChecker checker = new ConnectionChecker(thisServer.addUser(socket), thisServer);
-						Thread ccThread = new Thread(checker);
-						ccThread.start();
-					} catch (Exception e) {e.printStackTrace();}
-				}
-		}
-		
+		messageFormatter = new ConcreteMessageFormatter();
 	}
 
 	public void init() {
 		try {
-			server = new ServerSocket(PORT);
+			serverSocket = new ServerSocket(PORT);
 
 			this.log("Server started!");
-			this.log("Server IP: " + InetAddress.getLocalHost() + " ; Port: " + server.getLocalPort());
-			Thread slThread = new Thread(socketListen);
+			this.log("Server IP: " + InetAddress.getLocalHost() + " ; Port: " + serverSocket.getLocalPort());
+			Thread slThread = new Thread(new SocketListen(this));
 			slThread.start();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			/*try {
-				server.close();
-			} catch (IOException e) {}*/
 		}
-
 	}
 
-	private UserConnection addUser(Socket socket) throws IOException {
-		Scanner get = new Scanner(socket.getInputStream());
-		String name = get.nextLine();
+	class SocketListen implements Runnable {
+		private Server server;
+
+		public SocketListen(Server server) {
+			this.server = server;
+		}
+
+		@Override
+		public void run() {
+			while (true) {
+				try {
+					Socket socket = serverSocket.accept();
+					this.server.addUser(socket);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	class ConnectionMaintainer implements Runnable {
+		private Server server;
+		private UserConnection connection;
+
+		public ConnectionMaintainer(Server server, UserConnection connection) {
+			this.server = server;
+			this.connection = connection;
+		}
+
+		public boolean checkConnection() throws IOException {
+			if (!connection.getSocket().getInetAddress().isReachable(2000)) {
+				System.out.println("Could not reach");
+				server.closeConnection(connection);
+				return false;
+			}
+			return true;
+		}
+
+		public void run() {
+			try {
+				while (this.checkConnection()) {
+					if (connection.getInStream().available() > 0) {
+						Message message = connection.readMessage();
+						server.blastMessage(message);
+					}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					server.closeConnection(connection);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	private UserConnection addUser(Socket socket) throws IOException, ClassNotFoundException {
 		// do unique name checking later...
-		UserConnection uc = new UserConnection(new User(name), socket);
+		UserConnection uc = new UserConnection(new User(), socket);
+		Message initMessage = (Message) uc.getInStream().readObject();
+		uc.getUser().setName(initMessage.getSender());
 		connections.add(uc);
-
-		/*
-		 * for (UserConnection connection : connections) { Socket socket =
-		 * connection.getSocket(); PrintWriter print = new
-		 * PrintWriter(socket.getOutputStream()); print.println("#?!" + Users);
-		 * print.flush(); }
-		 */
-
-		//debug
-		System.out.println(uc.getUser().getName());
-		
-		//get.close();
+		this.log(uc.getUser().getName() + " connected from: " + socket.getRemoteSocketAddress());
+		Thread thread = new Thread(new ConnectionMaintainer(this, uc));
+		thread.start();
 		return uc;
 	}
-	
-	public void blastMessage(String message) {
+
+	public void closeConnection(UserConnection connection) throws IOException {
+		connection.getSocket().close();
+		this.getConnections().remove(connection);
+		this.log(connection.getUser().getName() + " disconnected");
+		this.blastMessage(connection.getUser().getName() + " disconnected");
+	}
+
+	public void blastMessage(Message message) {
+		/*
+		 * for (UserConnection connection : connections) { try { Socket socket =
+		 * connection.getSocket(); PrintWriter print = new
+		 * PrintWriter(socket.getOutputStream()); print.println(message); print.flush();
+		 * } catch (IOException e) { e.printStackTrace(); } }
+		 */
+		System.out.println(message.getContent());
 		for (UserConnection connection : connections) {
 			try {
-				Socket socket = connection.getSocket();
-				PrintWriter print = new PrintWriter(socket.getOutputStream());
-				print.println(message);
-				print.flush();
-			} catch (IOException e) { e.printStackTrace(); }
+				connection.getOutStream().writeObject(message);
+				connection.getOutStream().flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-		//debug
-		System.out.println(message);
+	}
+
+	public void blastMessage(String content) {
+		Message message = new Message();
+		message.setSender("Server");
+		message.setContent(content);
+		this.blastMessage(message);
 	}
 
 	public void attach(ServerObserver obs) {
@@ -98,14 +150,18 @@ public class Server {
 	}
 
 	// equivalent of updateAll()
-	public void log(String message) {
-		System.out.println(message);
+	public void log(Message message) {
+		this.log(messageFormatter.format(message));
+	}
+	
+	public void log(String text) {
+		System.out.println(text);
 		for (ServerObserver ob : observers)
-			ob.update(message);
+			ob.update(text);
 	}
 
 	public ServerSocket getServer() {
-		return server;
+		return serverSocket;
 	}
 
 	public List<UserConnection> getConnections() {
@@ -121,10 +177,23 @@ public class Server {
 class UserConnection {
 	private User user;
 	private Socket socket;
+	private ObjectInputStream inStream;
+	private ObjectOutputStream outStream;
 
 	public UserConnection(User user, Socket socket) {
 		this.user = user;
 		this.socket = socket;
+		try {
+			outStream = new ObjectOutputStream(socket.getOutputStream());
+			inStream = new ObjectInputStream(socket.getInputStream());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public Message readMessage() throws IOException, ClassNotFoundException {
+		Message message = (Message) this.getInStream().readObject();
+		return message;
 	}
 
 	public User getUser() {
@@ -141,6 +210,22 @@ class UserConnection {
 
 	public void setSocket(Socket socket) {
 		this.socket = socket;
+	}
+
+	public ObjectInputStream getInStream() {
+		return inStream;
+	}
+
+	public void setInStream(ObjectInputStream inStream) {
+		this.inStream = inStream;
+	}
+
+	public ObjectOutputStream getOutStream() {
+		return outStream;
+	}
+
+	public void setOutStream(ObjectOutputStream outStream) {
+		this.outStream = outStream;
 	}
 
 }

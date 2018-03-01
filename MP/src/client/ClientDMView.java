@@ -19,7 +19,7 @@ import shared.MessageFormatter;
 
 public class ClientDMView extends JFrame implements ClientObserver {
 	private static final long serialVersionUID = 1L;
-	private static final String placeholderName = "Message";
+	private static final String messagePlaceholderName = "Message";
 
 	private Client model;
 	private String destUser;
@@ -164,8 +164,8 @@ public class ClientDMView extends JFrame implements ClientObserver {
 		return serialVersionUID;
 	}
 
-	public static String getPlaceholdername() {
-		return placeholderName;
+	public static String getMessagePlaceholdername() {
+		return messagePlaceholderName;
 	}
 
 }

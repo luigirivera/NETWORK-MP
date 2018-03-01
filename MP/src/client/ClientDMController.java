@@ -31,7 +31,7 @@ public class ClientDMController {
 	class DMMessageBoxFocusListener implements FocusListener {
 		@Override
 		public void focusGained(FocusEvent arg0) {
-			if (view.getDmMessage().getText().equals(ClientDMView.getPlaceholdername())) {
+			if (view.getDmMessage().getText().equals(ClientDMView.getMessagePlaceholdername())) {
 				view.getDmMessage().setText("");
 				view.getDmMessage().setForeground(Color.BLACK);
 			}
@@ -41,7 +41,7 @@ public class ClientDMController {
 		public void focusLost(FocusEvent arg0) {
 			if (view.getDmMessage().getText().isEmpty()) {
 				view.getDmMessage().setForeground(Color.GRAY);
-				view.getDmMessage().setText(ClientDMView.getPlaceholdername());
+				view.getDmMessage().setText(ClientDMView.getMessagePlaceholdername());
 			}
 
 		}
@@ -74,7 +74,7 @@ public class ClientDMController {
 
 	private void sendMessage() {
 		if (!view.getDmMessage().getText().isEmpty()
-				&& !view.getDmMessage().getText().equals(ClientDMView.getPlaceholdername())) {
+				&& !view.getDmMessage().getText().equals(ClientDMView.getMessagePlaceholdername())) {
 			try {
 				model.sendMessage(view.getDmMessage().getText(), view.getDestUser());
 			} catch (IOException e) { e.printStackTrace(); }

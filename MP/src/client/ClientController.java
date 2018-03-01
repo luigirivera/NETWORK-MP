@@ -63,7 +63,7 @@ public class ClientController {
 	}
 	
 	private void onLogin() {
-		if(!view.getUserName().getText().isEmpty()) {
+		if(!view.getUserName().getText().trim().isEmpty()) {
 			view.getLogin().setEnabled(false);
 			view.getUserName().setEnabled(false);
 			try {

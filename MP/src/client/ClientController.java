@@ -19,7 +19,9 @@ public class ClientController {
 	private Client model;
 	private ClientView view;
 	
-	private String placeholderName = "Message";
+	private String messagePlaceholderName = "Message";
+	private String DEFAULT_HOST = "localhost";
+	private String DEFAULT_PORT = "5000";
 
 	public ClientController(Client model, ClientView view) {
 		this.model = model;
@@ -32,8 +34,32 @@ public class ClientController {
 		this.view.addSendMessageListener(new SendMessageListener());
 		this.view.addMessageBoxListener(new MessageBoxKeyListener(), new MessageBoxFocusListener());
 		this.view.addUserListListener(new UserListListener());
+		this.view.addShowChatRoomsListener(new ShowChatRoomsListener());
+		this.view.addHideChatRoomsListener(new HideChatRoomsListener());
 		
 		this.view.addLoginBoxListener(new LoginBoxListener());
+	}
+	
+	class ShowChatRoomsListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			view.getShowChatRoom().setVisible(false);
+			view.getHideChatRoom().setVisible(true);
+			//show JFrame of Chatrooms
+		}
+		
+	}
+	
+	class HideChatRoomsListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			view.getShowChatRoom().setVisible(true);
+			view.getHideChatRoom().setVisible(false);
+			//hide JFrame of Chatrooms
+		}
+		
 	}
 	
 	class LoginBoxListener implements KeyListener{
@@ -64,18 +90,24 @@ public class ClientController {
 	
 	private void onLogin() {
 		if(!view.getUserName().getText().isEmpty()) {
-			view.getLogin().setEnabled(false);
+			view.getLogin().setVisible(false);
 			view.getUserName().setEnabled(false);
 			try {
 				model.openSocket();
 				model.setName(view.getUserName().getText());
 				model.sendMessage(view.getUserName().getText());
 			} catch (IOException ex) { ex.printStackTrace(); }
-			view.getLogout().setEnabled(true);
+			view.getLogout().setVisible(true);
 			view.getMessage().setEnabled(true);
 			view.getSendMessage().setEnabled(true);
 			view.getUserList().setVisible(true);
 			view.getChat().setVisible(true);
+			view.getHost().setEnabled(false);
+			view.getPort().setEnabled(false);
+			view.getShowChatRoom().setEnabled(true);
+			view.getHideChatRoom().setEnabled(true);
+			view.getCreateGroupDM().setEnabled(false);
+			view.getSendFile().setEnabled(true);
 		}
 	}
 
@@ -83,15 +115,24 @@ public class ClientController {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			view.getLogout().setEnabled(false);
+			view.getLogout().setVisible(false);
 			try {
 				model.closeSocket();
 			} catch (IOException ex) { ex.printStackTrace(); }
 			view.getUserName().setEnabled(true);
-			view.getLogin().setEnabled(true);
+			view.getLogin().setVisible(true);
 			view.getMessage().setEnabled(false);
 			view.getSendMessage().setEnabled(false);
 			view.getUserList().setVisible(false);
+			view.getChat().setVisible(false);
+			view.getHost().setEnabled(true);
+			view.getPort().setEnabled(true);
+			view.getShowChatRoom().setEnabled(false);
+			view.getHideChatRoom().setEnabled(false);
+			view.getHideChatRoom().setVisible(false);
+			view.getShowChatRoom().setVisible(true);
+			view.getCreateGroupDM().setEnabled(false);
+			view.getSendFile().setEnabled(false);
 			view.clearChat();
 		}
 
@@ -101,11 +142,11 @@ public class ClientController {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(!view.getMessage().getText().isEmpty() && !view.getMessage().getText().equals(placeholderName)) {
+			if(!view.getMessage().getText().isEmpty() && !view.getMessage().getText().equals(messagePlaceholderName)) {
 				try {
 					model.sendMessage(view.getMessage().getText());
 				} catch (IOException ex) {ex.printStackTrace();}
-				view.getMessage().setText(placeholderName);
+				view.getMessage().setText(messagePlaceholderName);
 				view.getMessage().setForeground(Color.GRAY);
 			}
 		}
@@ -135,7 +176,7 @@ public class ClientController {
 	class MessageBoxFocusListener implements FocusListener{
 		@Override
 		public void focusGained(FocusEvent arg0) {
-			if (view.getMessage().getText().equals(placeholderName)) {
+			if (view.getMessage().getText().equals(messagePlaceholderName)) {
 				view.getMessage().setText("");
 				view.getMessage().setForeground(Color.BLACK);
 			}
@@ -145,7 +186,7 @@ public class ClientController {
 		public void focusLost(FocusEvent arg0) {
 			if (view.getMessage().getText().isEmpty()) {
 				view.getMessage().setForeground(Color.GRAY);
-				view.getMessage().setText(placeholderName);
+				view.getMessage().setText(messagePlaceholderName);
 			}
 			
 		}
@@ -156,11 +197,24 @@ public class ClientController {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if(e.getClickCount() == 2 && !view.getUserList().getSelectedValue().equalsIgnoreCase(model.getName())) {
+			if(e.getClickCount() == 2 && !view.getUserList().getSelectedValue().equalsIgnoreCase(model.getName()) && view.getUserList().getSelectedIndices().length == 1) {
 				ClientDMView newView = new ClientDMView(model, view.getUserList().getSelectedValue());
 				ClientDMController newController = new ClientDMController(model, newView);
 				newController.init();
 				model.attach(newView);
+			}
+			
+			else if(view.getUserList().getSelectedIndices().length > 1) {
+				if(view.getUserList().getSelectedIndices().length == 2 && !view.getUserList().getSelectedValuesList().contains(model.getName()))
+					view.getCreateGroupDM().setEnabled(true);
+				else if(view.getUserList().getSelectedIndices().length > 2)
+					view.getCreateGroupDM().setEnabled(true);
+				else
+					view.getCreateGroupDM().setEnabled(false);
+			}
+			
+			else if (view.getUserList().getSelectedIndices().length < 2 || view.getUserList().getSelectedIndices().length == 2 && view.getUserList().getSelectedValuesList().contains(model.getName())) {
+				view.getCreateGroupDM().setEnabled(false);
 			}
 		}
 

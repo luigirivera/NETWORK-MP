@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import shared.MessageRouter;
 
 public class Client {
 	private final static String DEFAULT_SERVER_ADDRESS = "localhost";
-	private final static int DEFAULT_SERVER_PORT = 5000;
+	private final static int DEFAULT_SERVER_PORT = 49162;
 
 	private String name;
 
@@ -28,6 +29,10 @@ public class Client {
 
 	private ObjectInputStream inStream;
 	private ObjectOutputStream outStream;
+	
+	private ClientGlobalView globalView;
+	private ClientLoginView loginView;
+	private ClientChatRoomListView chatroomListView;
 
 	private List<ClientObserver> observers;
 
@@ -38,10 +43,16 @@ public class Client {
 		this.messageRouter = new ClientMessageRouter(this);
 		this.observers = new ArrayList<ClientObserver>();
 	}
+	
+	public void init(ClientGlobalView GlobalView, ClientLoginView LoginView, ClientChatRoomListView ChatRoomListView) {
+		globalView = GlobalView;
+		loginView = LoginView;
+		chatroomListView = ChatRoomListView;
+	}
 
 	class MessageReceiver implements Runnable {
 		private Client client;
-
+		
 		public MessageReceiver(Client client) {
 			this.client = client;
 		}
@@ -51,7 +62,7 @@ public class Client {
 				while (true) {
 					client.readMessage();
 				}
-			} catch (Exception e) {
+			}catch (Exception e) {
 				e.printStackTrace();
 			} finally {
 				try {
@@ -63,13 +74,16 @@ public class Client {
 		}
 	}
 
-	public void openSocket() throws IOException {
+	public void openSocket(String address, int port) throws IOException {
 		if (socket != null && !socket.isClosed())
 			closeSocket();
-		socket = new Socket(serverAddress, serverPort);
+		socket = new Socket(address, port);
+		serverAddress = address;
+		serverPort = port;
 		this.initStreams();
 		Thread thread = new Thread(new MessageReceiver(this));
 		thread.start();
+
 	}
 
 	private void initStreams() throws IOException {
@@ -147,5 +161,28 @@ public class Client {
 	public List<ClientObserver> getObservers() {
 		return observers;
 	}
+	
+	public ClientGlobalView getGlobalView() {
+		return globalView;
+	}
 
+	public void setGlobalView(ClientGlobalView globalView) {
+		this.globalView = globalView;
+	}
+
+	public ClientLoginView getLoginView() {
+		return loginView;
+	}
+
+	public void setLoginView(ClientLoginView loginView) {
+		this.loginView = loginView;
+	}
+	
+	public ClientChatRoomListView getChatroomListView() {
+		return chatroomListView;
+	}
+
+	public void setChatroomListView(ClientChatRoomListView chatroomListView) {
+		this.chatroomListView = chatroomListView;
+	}
 }

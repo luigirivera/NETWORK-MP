@@ -31,6 +31,7 @@ public class ClientDMView extends JFrame implements ClientObserver {
 	private JTextArea dmChat;
 	private JScrollPane dmChatScroll;
 	private JScrollPane dmMessageScroll;
+	private JButton dmSendFile;
 
 	public ClientDMView(Client model, String destUser) {
 		super(String.format("%s - MonoChrome", destUser));
@@ -55,20 +56,24 @@ public class ClientDMView extends JFrame implements ClientObserver {
 		dmChat = new JTextArea();
 		dmChatScroll = new JScrollPane();
 		dmMessageScroll = new JScrollPane();
+		dmSendFile = new JButton("...");
 
 		dmChatScroll.setViewportView(dmChat);
 		dmMessageScroll.setViewportView(dmMessage);
 
-		dmChatScroll.setPreferredSize(new Dimension(480, 420));
-		dmMessageScroll.setPreferredSize(new Dimension(400, 40));
-
 		dmChat.setEditable(false);
-
+		
+		dmPanel.setLayout(null);
 		dmPanel.add(dmChatScroll);
 		dmPanel.add(dmMessageScroll);
 		dmPanel.add(dmSend);
+		dmPanel.add(dmSendFile);
 		this.add(dmPanel);
-
+		
+		dmChatScroll.setBounds(5,5,480,420);
+		dmMessageScroll.setBounds(5,430,350,40);
+		dmSend.setBounds(360, 430, 75, 40);
+		dmSendFile.setBounds(440, 430, 50, 40);
 		dmPanel.setBounds(0, 0, 500, 478);
 	}
 

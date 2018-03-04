@@ -41,10 +41,10 @@ public class ClientMessageRouter implements MessageRouter {
 		else if (message instanceof UserListMessage) {
 			List<ClientObserver> trash = new ArrayList<ClientObserver>();
 			for(ClientObserver obs : client.getObservers()) {
-				if(obs instanceof ClientView) {
-					((ClientView)obs).getUsernameList().clear();
+				if(obs instanceof ClientGlobalView) {
+					((ClientGlobalView)obs).getUsernameList().clear();
 					for(String username : ((UserListMessage)message).getUsernames())
-						((ClientView)obs).getUsernameList().addElement(username);
+						((ClientGlobalView)obs).getUsernameList().addElement(username);
 				}
 				if (obs instanceof ClientDMView && !((UserListMessage)message).getUsernames().contains(((ClientDMView)obs).getDestUser()))
 					trash.add(obs);
@@ -58,7 +58,7 @@ public class ClientMessageRouter implements MessageRouter {
 		
 		else if (message instanceof Message) {
 			for(ClientObserver obs : client.getObservers()) {
-				if(obs instanceof ClientView)
+				if(obs instanceof ClientGlobalView)
 					obs.appendChat(message);
 			}
 		}

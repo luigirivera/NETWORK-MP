@@ -42,6 +42,7 @@ public class ServerView extends JFrame implements ServerObserver {
 		laScroll.setViewportView(logsArea);
 		logsArea.setEditable(false);
 		terminate.setVisible(false);
+		logsArea.setLineWrap(true);
 		
 		panel.setLayout(null);
 		panel.add(laScroll);

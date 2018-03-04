@@ -2,6 +2,7 @@ package client;
 
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowListener;
 
 import javax.swing.DefaultListModel;
@@ -10,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 
 import shared.Message;
 
@@ -45,10 +47,11 @@ public class ClientChatRoomListView extends JFrame implements ClientObserver {
 		panel = new JPanel();
 		
 		chatRoomListScroll.setViewportView(chatRoomList);
+		chatRoomList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
 		panel.add(chatRoomListScroll);
 		panel.add(addChatRoom);
-		
+		chatRoomsList.addElement("Hello");
 		addChatRoom.setMargin(new Insets(0,0,0,0));
 		panel.setLayout(null);
 		
@@ -66,6 +69,10 @@ public class ClientChatRoomListView extends JFrame implements ClientObserver {
 	
 	public void addCRLWindowListener(WindowListener e) {
 		this.addWindowListener(e);
+	}
+	
+	public void addCRLListener(MouseListener e) {
+		chatRoomList.addMouseListener(e);
 	}
 	
 	// ------------UPDATE METHODS------------//
@@ -89,5 +96,19 @@ public class ClientChatRoomListView extends JFrame implements ClientObserver {
 	}
 	
 	// ------------GETTERS AND SETTERS------------//
+	public JList<String> getChatRoomList() {
+		return chatRoomList;
+	}
 
+	public void setChatRoomList(JList<String> chatRoomList) {
+		this.chatRoomList = chatRoomList;
+	}
+
+	public JButton getAddChatRoom() {
+		return addChatRoom;
+	}
+
+	public void setAddChatRoom(JButton addChatRoom) {
+		this.addChatRoom = addChatRoom;
+	}
 }

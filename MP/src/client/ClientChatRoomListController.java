@@ -1,17 +1,24 @@
 package client;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 public class ClientChatRoomListController {
 	private Client model;
@@ -25,6 +32,35 @@ public class ClientChatRoomListController {
 	public void init() {
 		this.view.addChatRoomListener(new CreateChatRoomListener());
 		this.view.addCRLWindowListener(new ChatRoomListWindowListener());
+		this.view.addCRLListener(new ChatRoomListListener());
+	}
+	
+	class ChatRoomListListener implements MouseListener{
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			if(SwingUtilities.isRightMouseButton(e))
+			{
+				int element = view.getChatRoomList().locationToIndex(e.getPoint());
+				view.getChatRoomList().setSelectedIndex(element);
+				requestAccess();
+			}
+			
+			else if(e.getClickCount() == 2)
+				requestAccess();
+				
+			
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent arg0) {}
+		@Override
+		public void mouseExited(MouseEvent arg0) {}
+		@Override
+		public void mousePressed(MouseEvent arg0) {}
+		@Override
+		public void mouseReleased(MouseEvent arg0) {}
+		
 	}
 	
 	class ChatRoomListWindowListener implements WindowListener{
@@ -118,12 +154,32 @@ public class ClientChatRoomListController {
 					actionPerformed(arg0);
 				}
 				else 
-					/*enter code for creating chatroom here, also delete the ; after this comment*/;
+					/*enter code for creating chatroom here, also delete the ; after this comment*/
 				break;
 			default:
 				break;
 			}
 		}
 		
+	}
+	
+	private void requestAccess() {
+		JPasswordField passField = new JPasswordField();
+		JPanel panel = new JPanel();
+		JLabel passLabel = new JLabel("Enter Room Password:");
+		
+		panel.setLayout(new GridLayout(2,2));
+		panel.add(passLabel);
+		panel.add(passField);
+		passField.setPreferredSize(new Dimension(300,30));
+		
+		int result = JOptionPane.showConfirmDialog(null, panel,String.format("Join %s", view.getChatRoomList().getSelectedValue()), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		switch(result) {
+		case JOptionPane.OK_OPTION:
+			//check and blah blah
+			break;
+		default:
+			break;
+		}
 	}
 }

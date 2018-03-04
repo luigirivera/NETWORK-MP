@@ -89,11 +89,11 @@ public class ClientGroupDMController {
 			JPanel panel = new JPanel();
 			JComboBox<String> nonMembers = new JComboBox<String>();
 			
-			nonMembers.addItem("List of Friends here");
+			nonMembers.addItem("List of Users here");
 			
 			panel.add(nonMembers);
 			
-			int result = JOptionPane.showConfirmDialog(null, panel, "Invite Friend", JOptionPane.OK_CANCEL_OPTION);
+			int result = JOptionPane.showConfirmDialog(null, panel, "Invite User", JOptionPane.OK_CANCEL_OPTION);
 			
 			switch(result) {
 			case JOptionPane.OK_OPTION:

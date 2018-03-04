@@ -35,6 +35,8 @@ public class ClientChatRoomListView extends JFrame implements ClientObserver {
 		setVisible(false);
 	}
 	
+	// ------------INITIALIZER------------//
+	
 	private void init() {
 		chatRoomListScroll = new JScrollPane();
 		chatRoomsList = new DefaultListModel<String>();
@@ -57,6 +59,7 @@ public class ClientChatRoomListView extends JFrame implements ClientObserver {
 		add(panel);
 	}
 	
+	// ------------LISTENERS------------//
 	public void addChatRoomListener(ActionListener e) {
 		addChatRoom.addActionListener(e);
 	}
@@ -64,6 +67,8 @@ public class ClientChatRoomListView extends JFrame implements ClientObserver {
 	public void addCRLWindowListener(WindowListener e) {
 		this.addWindowListener(e);
 	}
+	
+	// ------------UPDATE METHODS------------//
 
 	@Override
 	public void appendChat(Message message) {
@@ -82,5 +87,7 @@ public class ClientChatRoomListView extends JFrame implements ClientObserver {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	// ------------GETTERS AND SETTERS------------//
 
 }

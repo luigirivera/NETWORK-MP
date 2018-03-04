@@ -58,7 +58,7 @@ public class ClientGlobalView extends JFrame implements ClientObserver {
 		this.messageFormatter = new ConcreteMessageFormatter();
 
 		init();
-		setSize(765, 600);
+		setSize(750, 575);
 		setLayout(null);
 		setVisible(false);
 		setResizable(false);
@@ -105,6 +105,9 @@ public class ClientGlobalView extends JFrame implements ClientObserver {
 		dmMenu.add(privateDM);
 		dmMenu.add(createGroupDM);
 		
+		chat.setEditable(false);
+		chat.setLineWrap(true);
+		
 		showChatRoom.setMargin(new Insets(0,0,0,0));
 		logout.setMargin(new Insets(0,0,0,0));
 
@@ -123,9 +126,9 @@ public class ClientGlobalView extends JFrame implements ClientObserver {
 		hideChatRoom.setBounds(560, 5, 175, 40);
 		userListScroll.setBounds(560, 50, 175, 300);
 		logout.setBounds(560,360, 175, 40);
-		messageScroll.setBounds(5, 410, 550, 40);
-		sendMessage.setBounds(560, 410, 125, 40);
-		sendFile.setBounds(690, 410, 45, 40);
+		messageScroll.setBounds(5, 410, 550, 50);
+		sendMessage.setBounds(560, 410, 125, 50);
+		sendFile.setBounds(690, 410, 45, 50);
 		
 	}
 
@@ -164,6 +167,10 @@ public class ClientGlobalView extends JFrame implements ClientObserver {
 	public void addDMMessageMenuListener(ActionListener e) {
 		createGroupDM.addActionListener(e);
 		
+	}
+	
+	public void addSendFileListener(ActionListener e) {
+		sendFile.addActionListener(e);
 	}
 
 	// ------------UPDATE METHODS------------//

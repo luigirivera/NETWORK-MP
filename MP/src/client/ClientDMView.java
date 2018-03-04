@@ -1,5 +1,6 @@
 package client;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
@@ -41,7 +42,7 @@ public class ClientDMView extends JFrame implements ClientObserver {
 		this.messageFormatter = new ConcreteMessageFormatter();
 
 		init();
-		this.setSize(500, 500);
+		this.setSize(500, 520);
 		this.setLayout(null);
 		this.setVisible(true);
 		this.setResizable(false);
@@ -51,7 +52,7 @@ public class ClientDMView extends JFrame implements ClientObserver {
 
 	public void init() {
 		dmPanel = new JPanel();
-		dmMessage = new JTextField();
+		dmMessage = new JTextField(messagePlaceholderName);
 		dmSend = new JButton("Send");
 		dmChat = new JTextArea();
 		dmChatScroll = new JScrollPane();
@@ -62,6 +63,8 @@ public class ClientDMView extends JFrame implements ClientObserver {
 		dmMessageScroll.setViewportView(dmMessage);
 
 		dmChat.setEditable(false);
+		dmChat.setLineWrap(true);
+		dmMessage.setForeground(Color.GRAY);
 		
 		dmPanel.setLayout(null);
 		dmPanel.add(dmChatScroll);
@@ -71,10 +74,10 @@ public class ClientDMView extends JFrame implements ClientObserver {
 		this.add(dmPanel);
 		
 		dmChatScroll.setBounds(5,5,480,420);
-		dmMessageScroll.setBounds(5,430,350,40);
-		dmSend.setBounds(360, 430, 75, 40);
-		dmSendFile.setBounds(440, 430, 50, 40);
-		dmPanel.setBounds(0, 0, 500, 478);
+		dmMessageScroll.setBounds(5,430,350,50);
+		dmSend.setBounds(360, 430, 75, 50);
+		dmSendFile.setBounds(440, 430, 50, 50);
+		dmPanel.setBounds(0, 0, 500, 520);
 	}
 
 	// ------------LISTENERS------------//
@@ -89,6 +92,10 @@ public class ClientDMView extends JFrame implements ClientObserver {
 	
 	public void addDMWindowListener(WindowListener e) {
 		this.addWindowListener(e);
+	}
+	
+	public void addDmSendFileListener(ActionListener e) {
+		dmSendFile.addActionListener(e);
 	}
 
 	// ------------UPDATE METHODS------------//

@@ -10,13 +10,17 @@ public class ClientDriver {
 		ClientGlobalView cGView = new ClientGlobalView(client);
 		ClientLoginView cLView = new ClientLoginView(client);
 		ClientChatRoomListView cCRLView = new ClientChatRoomListView(client);
-	//	new ClientChatRoomView();
-	//	new ClientDMView(client, "hello");
-	//	new ClientGroupDMView();
+		
+	//	new ClientChatRoomController(client, new ClientChatRoomView("Chat")).init();
+	//	new ClientDMController(client, new ClientDMView(client, "hello")).init();
+	//	new ClientGroupDMController(client, new ClientGroupDMView("Group")).init();
+		
 		
 		ClientGlobalController cController = new ClientGlobalController(client, cGView);
 		ClientLoginController cLController = new ClientLoginController(client, cLView);
 		ClientChatRoomListController cCRLController = new ClientChatRoomListController(client, cCRLView);
+		
+	
 		
 		cLController.init();
 		cController.init();

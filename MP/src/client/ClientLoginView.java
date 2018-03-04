@@ -45,6 +45,8 @@ public class ClientLoginView extends JFrame implements ClientObserver {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
+	// ------------INITIALIZER------------//
+	
 	public void init() {
 		panel = new JPanel();
 		userName = new JTextField();
@@ -77,6 +79,8 @@ public class ClientLoginView extends JFrame implements ClientObserver {
 		login.setBounds(240, 140, 190, 30);
 	}
 	
+	// ------------LISTENERS------------//
+	
 	public void addLoginBoxListener(KeyListener e, FocusListener f) {
 		userName.addKeyListener(e);
 		host.addKeyListener(e);
@@ -87,6 +91,28 @@ public class ClientLoginView extends JFrame implements ClientObserver {
 	public void addLoginListener(ActionListener e) {
 		login.addActionListener(e);
 	}
+	
+	// ------------UPDATE METHODS------------//
+
+	@Override
+	public void appendChat(Message message) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void appendChat(String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clearChat() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	// ------------GETTERS AND SETTERS------------//
 	
 	public JTextField getHost() {
 		return host;
@@ -118,23 +144,5 @@ public class ClientLoginView extends JFrame implements ClientObserver {
 
 	public void setUserName(JTextField userName) {
 		this.userName = userName;
-	}
-
-	@Override
-	public void appendChat(Message message) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void appendChat(String text) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void clearChat() {
-		// TODO Auto-generated method stub
-		
 	}
 }

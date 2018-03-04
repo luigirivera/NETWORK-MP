@@ -117,7 +117,8 @@ public class ClientChatRoomListController {
 					JOptionPane.showMessageDialog(null, "Please enter a Chat Room Password", "Error", JOptionPane.ERROR_MESSAGE);
 					actionPerformed(arg0);
 				}
-				else /*enter code for creating chatroom here, also delete the ; after this comment*/;
+				else 
+					/*enter code for creating chatroom here, also delete the ; after this comment*/;
 				break;
 			default:
 				break;

@@ -9,7 +9,9 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -33,7 +35,9 @@ public class ClientGroupDMView extends JFrame implements ClientObserver {
 	private JScrollPane membersScroll;
 	private JScrollPane chatScroll;
 	private JScrollPane messageScroll;
-
+	private JPopupMenu dmMenu;
+	private JMenuItem privateDM;
+	private JMenuItem createGroupDM;
 	private JPanel panel;
 	private DefaultListModel<String> membersList;
 	
@@ -72,6 +76,9 @@ public class ClientGroupDMView extends JFrame implements ClientObserver {
 		chatScroll = new JScrollPane();
 		messageScroll = new JScrollPane();
 		leave = new JButton("Leave Group DM");
+		dmMenu = new JPopupMenu();
+		privateDM = new JMenuItem("Message");
+		createGroupDM = new JMenuItem("Group Message");
 		
 		membersScroll.setViewportView(members);
 		chatScroll.setViewportView(chat);
@@ -80,6 +87,9 @@ public class ClientGroupDMView extends JFrame implements ClientObserver {
 		chat.setLineWrap(true);
 		chat.setEditable(false);
 		message.setForeground(Color.GRAY);
+		
+		dmMenu.add(privateDM);
+		dmMenu.add(createGroupDM);
 		
 		panel.setLayout(null);
 		panel.add(chatScroll);
@@ -120,6 +130,15 @@ public class ClientGroupDMView extends JFrame implements ClientObserver {
 		sendFile.addActionListener(e);
 	}
 	
+	public void addMessageMenuListener(ActionListener e) {
+		privateDM.addActionListener(e);
+	}
+	
+	public void addGroupMessageMenuListener(ActionListener e) {
+		createGroupDM.addActionListener(e);
+		
+	}
+	
 	// ------------UPDATE METHODS------------//
 
 	@Override
@@ -150,6 +169,14 @@ public class ClientGroupDMView extends JFrame implements ClientObserver {
 		this.sendMessage = sendMessage;
 	}
 
+	public JList<String> getMembers() {
+		return members;
+	}
+
+	public void setMembers(JList<String> members) {
+		this.members = members;
+	}
+
 	public JButton getSendFile() {
 		return sendFile;
 	}
@@ -176,6 +203,30 @@ public class ClientGroupDMView extends JFrame implements ClientObserver {
 
 	public void setMembersScroll(JScrollPane membersScroll) {
 		this.membersScroll = membersScroll;
+	}
+	
+	public JPopupMenu getDmMenu() {
+		return dmMenu;
+	}
+
+	public void setDmMenu(JPopupMenu dmMenu) {
+		this.dmMenu = dmMenu;
+	}
+
+	public JMenuItem getPrivateDM() {
+		return privateDM;
+	}
+
+	public void setPrivateDM(JMenuItem privateDM) {
+		this.privateDM = privateDM;
+	}
+
+	public JMenuItem getCreateGroupDM() {
+		return createGroupDM;
+	}
+
+	public void setCreateGroupDM(JMenuItem createGroupDM) {
+		this.createGroupDM = createGroupDM;
 	}
 
 }

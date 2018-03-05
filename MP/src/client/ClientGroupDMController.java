@@ -8,6 +8,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 
@@ -18,6 +20,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
+import client.ClientGlobalController.GroupMessageMenuListener;
+import client.ClientGlobalController.MessageMenuListener;
 
 public class ClientGroupDMController {
 	private Client model;
@@ -33,6 +39,8 @@ public class ClientGroupDMController {
 		view.addMessageBoxListener(new MessageBoxKeyListener(), new MessageBoxFocusListener());
 		view.addSendMessageListener(new SendMessageListener());
 		view.addSendFileListener(new SendFileListener());
+		this.view.addMessageMenuListener(new MessageMenuListener());
+		this.view.addGroupMessageMenuListener(new GroupMessageMenuListener());
 	}
 	
 	class SendFileListener implements ActionListener{
@@ -154,6 +162,70 @@ public class ClientGroupDMController {
 			view.getMessage().setText(ClientGroupDMView.getMessageplaceholdername());
 			view.getMessage().setForeground(Color.GRAY);
 		}
+	}
+	
+	class UserListListener implements MouseListener{
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			if(SwingUtilities.isRightMouseButton(e))
+				if(!view.getMembers().getSelectedValue().equalsIgnoreCase(model.getName()) && view.getMembers().getSelectedIndices().length == 1
+				|| view.getMembers().getSelectedValuesList().contains(model.getName()) && view.getMembers().getSelectedIndices().length == 2)
+				{
+					view.getCreateGroupDM().setEnabled(false);
+					view.getPrivateDM().setEnabled(true);
+					view.getDmMenu().show(view.getMembers(), e.getX(), e.getY());
+				}
+			
+				else if(view.getMembers().getSelectedValue().equalsIgnoreCase(model.getName()) && view.getMembers().getSelectedIndices().length == 1);
+			
+				else {
+					view.getCreateGroupDM().setEnabled(true);
+					view.getPrivateDM().setEnabled(false);
+					view.getDmMenu().show(view.getMembers(), e.getX(), e.getY());
+				}
+			else if(SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2 && !view.getMembers().getSelectedValue().equalsIgnoreCase(model.getName())) {
+				ClientDMView newView = new ClientDMView(model, view.getMembers().getSelectedValue());
+				ClientDMController newController = new ClientDMController(model, newView);
+				newController.init();
+				model.attach(newView);
+			}
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent arg0) {}
+
+		@Override
+		public void mouseExited(MouseEvent arg0) {}
+
+		@Override
+		public void mousePressed(MouseEvent arg0) {}
+
+		@Override
+		public void mouseReleased(MouseEvent arg0) {}
+		
+	}
+	
+	class MessageMenuListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			ClientDMView newView = new ClientDMView(model, view.getMembers().getSelectedValue());
+			ClientDMController newController = new ClientDMController(model, newView);
+			newController.init();
+			model.attach(newView);
+			
+		}
+		
+	}
+	
+	class GroupMessageMenuListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			//dm view stuff
+		}
+		
 	}
 
 	private void sendMessage() {

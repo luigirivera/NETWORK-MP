@@ -45,7 +45,7 @@ public class ClientGlobalController {
 		this.view.addShowChatRoomsListener(new ShowChatRoomsListener());
 		this.view.addHideChatRoomsListener(new HideChatRoomsListener());
 		this.view.addMessageMenuListener(new MessageMenuListener());
-		this.view.addDMMessageMenuListener(new DMMessageMenuListener());
+		this.view.addGroupMessageMenuListener(new GroupMessageMenuListener());
 		this.view.addSendFileListener(new SendFileListener());
 	}
 	
@@ -247,7 +247,7 @@ public class ClientGlobalController {
 		
 	}
 	
-	class DMMessageMenuListener implements ActionListener{
+	class GroupMessageMenuListener implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {

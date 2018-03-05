@@ -171,7 +171,7 @@ public class ClientGlobalView extends JFrame implements ClientObserver {
 		privateDM.addActionListener(e);
 	}
 	
-	public void addDMMessageMenuListener(ActionListener e) {
+	public void addGroupMessageMenuListener(ActionListener e) {
 		createGroupDM.addActionListener(e);
 		
 	}

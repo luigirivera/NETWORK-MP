@@ -10,7 +10,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -31,6 +33,9 @@ public class ClientChatRoomView extends JFrame {
 	private JTextField message;
 	private JList<String> members;
 	private JScrollPane membersScroll;
+	private JPopupMenu dmMenu;
+	private JMenuItem privateDM;
+	private JMenuItem createGroupDM;
 	private JScrollPane chatScroll;
 	private JScrollPane messageScroll;
 	private JPanel panel;
@@ -72,6 +77,9 @@ public class ClientChatRoomView extends JFrame {
 		chatScroll = new JScrollPane();
 		messageScroll = new JScrollPane();
 		leave = new JButton("Leave Chat Room");
+		dmMenu = new JPopupMenu();
+		privateDM = new JMenuItem("Message");
+		createGroupDM = new JMenuItem("Group Message");
 		
 		membersScroll.setViewportView(members);
 		chatScroll.setViewportView(chat);
@@ -80,6 +88,9 @@ public class ClientChatRoomView extends JFrame {
 		chat.setEditable(false);
 		chat.setLineWrap(true);
 		message.setForeground(Color.GRAY);
+		
+		dmMenu.add(privateDM);
+		dmMenu.add(createGroupDM);
 		
 		panel.setLayout(null);
 		panel.add(chatScroll);
@@ -101,8 +112,6 @@ public class ClientChatRoomView extends JFrame {
 		leave.setBounds(560, 360, 175, 40);
 	}
 
-
-	
 	// ------------LISTENERS------------//
 	public void addSendFileListener(ActionListener e) {
 		sendFile.addActionListener(e);
@@ -115,6 +124,15 @@ public class ClientChatRoomView extends JFrame {
 	
 	public void addSendMessageListener(ActionListener e) {
 		sendMessage.addActionListener(e);
+	}
+	
+	public void addMessageMenuListener(ActionListener e) {
+		privateDM.addActionListener(e);
+	}
+	
+	public void addGroupMessageMenuListener(ActionListener e) {
+		createGroupDM.addActionListener(e);
+		
 	}
 	// ------------UPDATE METHODS------------//
 	// ------------GETTERS AND SETTERS------------//
@@ -176,5 +194,37 @@ public class ClientChatRoomView extends JFrame {
 
 	public void setMessageScroll(JScrollPane messageScroll) {
 		this.messageScroll = messageScroll;
+	}
+	
+	public JList<String> getMembers() {
+		return members;
+	}
+
+	public void setMembers(JList<String> members) {
+		this.members = members;
+	}
+	
+	public JPopupMenu getDmMenu() {
+		return dmMenu;
+	}
+
+	public void setDmMenu(JPopupMenu dmMenu) {
+		this.dmMenu = dmMenu;
+	}
+
+	public JMenuItem getPrivateDM() {
+		return privateDM;
+	}
+
+	public void setPrivateDM(JMenuItem privateDM) {
+		this.privateDM = privateDM;
+	}
+
+	public JMenuItem getCreateGroupDM() {
+		return createGroupDM;
+	}
+
+	public void setCreateGroupDM(JMenuItem createGroupDM) {
+		this.createGroupDM = createGroupDM;
 	}
 }

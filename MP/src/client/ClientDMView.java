@@ -42,7 +42,14 @@ public class ClientDMView extends JFrame implements ClientObserver {
 		this.messageFormatter = new ConcreteMessageFormatter();
 
 		init();
-		this.setSize(500, 520);
+		
+		if(model.getSystemOS().equals("Windows"))
+			this.setSize(520, 545);
+		else if(model.getSystemOS().equals("Mac"))
+			this.setSize(500, 520);
+		else
+			this.setSize(520, 545);
+
 		this.setLayout(null);
 		this.setVisible(true);
 		this.setResizable(false);

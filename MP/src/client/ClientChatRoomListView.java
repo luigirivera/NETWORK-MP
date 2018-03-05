@@ -31,7 +31,14 @@ public class ClientChatRoomListView extends JFrame implements ClientObserver {
 		
 		this.model = model;
 		this.init();
-		setSize(400, 600);
+		
+		if(model.getSystemOS().equals("Windows"))
+			setSize(420, 625);
+		else if(model.getSystemOS().equals("Mac"))
+			setSize(400, 600);
+		else
+			setSize(420, 625);
+
 		setLayout(null);
 		setResizable(false);
 		setVisible(false);

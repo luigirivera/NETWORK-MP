@@ -58,7 +58,14 @@ public class ClientGlobalView extends JFrame implements ClientObserver {
 		this.messageFormatter = new ConcreteMessageFormatter();
 
 		init();
-		setSize(750, 575);
+		
+		if(model.getSystemOS().equals("Windows"))
+			setSize(770, 600);
+		else if(model.getSystemOS().equals("Mac"))
+			setSize(750, 575);
+		else
+			setSize(770, 600);
+		
 		setLayout(null);
 		setVisible(false);
 		setResizable(false);

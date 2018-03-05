@@ -17,6 +17,18 @@ import shared.MessageRouter;
 public class Client {
 	private final static String DEFAULT_SERVER_ADDRESS = "localhost";
 	private final static int DEFAULT_SERVER_PORT = 49162;
+	
+	private final String systemOS;
+	{
+		if(System.getProperty("os.name").startsWith("Windows"))
+			systemOS = "Windows";
+			
+		else if(System.getProperty("os.name").startsWith("Mac"))
+			systemOS = "Mac";
+			
+		else
+			systemOS = "Linux";	
+	}
 
 	private String name;
 
@@ -184,5 +196,9 @@ public class Client {
 
 	public void setChatroomListView(ClientChatRoomListView chatroomListView) {
 		this.chatroomListView = chatroomListView;
+	}
+	
+	public String getSystemOS() {
+		return systemOS;
 	}
 }

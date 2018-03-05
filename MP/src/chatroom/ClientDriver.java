@@ -11,9 +11,9 @@ public class ClientDriver {
 		ClientLoginView cLView = new ClientLoginView(client);
 		ClientChatRoomListView cCRLView = new ClientChatRoomListView(client);
 		
-	//	new ClientChatRoomController(client, new ClientChatRoomView("Chat")).init();
+	//	new ClientChatRoomController(client, new ClientChatRoomView(client, "Chat")).init();
 	//	new ClientDMController(client, new ClientDMView(client, "hello")).init();
-	//	new ClientGroupDMController(client, new ClientGroupDMView("Group")).init();
+	//	new ClientGroupDMController(client, new ClientGroupDMView(client, "Group")).init();
 		
 		
 		ClientGlobalController cController = new ClientGlobalController(client, cGView);

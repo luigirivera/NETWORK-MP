@@ -38,7 +38,13 @@ public class ClientLoginView extends JFrame implements ClientObserver {
 		panel.setBounds(0, 0, 500, 200);
 		add(panel);
 		
-		setSize(500, 200);
+		if(model.getSystemOS().equals("Windows"))
+			setSize(520, 225);
+		else if(model.getSystemOS().equals("Mac"))
+			setSize(500, 200);
+		else
+			setSize(520, 225);
+		
 		setLayout(null);
 		setVisible(true);
 		setResizable(false);

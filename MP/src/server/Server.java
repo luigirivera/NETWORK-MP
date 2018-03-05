@@ -24,6 +24,19 @@ public class Server {
 
 	private MessageFormatter messageFormatter;
 	private MessageRouter messageRouter;
+	
+	private final String systemOS;
+
+	{
+		if(System.getProperty("os.name").startsWith("Windows"))
+			systemOS = "Windows";
+			
+		else if(System.getProperty("os.name").startsWith("Mac"))
+			systemOS = "Mac";
+			
+		else
+			systemOS = "Linux";	
+	}
 
 	public Server() {
 		connections = new UserConnectionList();
@@ -208,6 +221,7 @@ public class Server {
 		for (ServerObserver ob : observers)
 			ob.update(text);
 	}
+	
 
 	public ServerSocket getServer() {
 		return serverSocket;
@@ -227,6 +241,10 @@ public class Server {
 
 	public void setListenerSocket(SocketListen listenerSocket) {
 		this.listenerSocket = listenerSocket;
+	}
+	
+	public String getSystemOS() {
+		return systemOS;
 	}
 
 }

@@ -24,7 +24,14 @@ public class ServerView extends JFrame implements ServerObserver {
 		this.init();
 		setLayout(null);
 		setResizable(false);
-		setSize(400,1000);
+		
+		if(model.getSystemOS().equals("Windows"))
+			setSize(420,1025);
+		else if(model.getSystemOS().equals("Mac"))
+			setSize(400,1000);
+		else
+			setSize(420,1025);
+		
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		

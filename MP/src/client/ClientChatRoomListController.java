@@ -172,11 +172,17 @@ public class ClientChatRoomListController {
 		panel.add(passLabel);
 		panel.add(passField);
 		passField.setPreferredSize(new Dimension(300,30));
-		
+		System.out.println(passField.getPassword().toString());
 		int result = JOptionPane.showConfirmDialog(null, panel,String.format("Join %s", view.getChatRoomList().getSelectedValue()), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 		switch(result) {
 		case JOptionPane.OK_OPTION:
 			//check and blah blah
+			if(passField.getPassword().toString().equals("Hello"))
+			{
+				System.out.println("hey");
+			}
+			else
+				JOptionPane.showMessageDialog(null, "Incorrect Password", "Access Denied", JOptionPane.ERROR_MESSAGE);
 			break;
 		default:
 			break;

@@ -35,10 +35,20 @@ public class ClientChatRoomView extends JFrame {
 	private JScrollPane messageScroll;
 	private JPanel panel;
 	private DefaultListModel<String> membersList;
-	public ClientChatRoomView(String name) {
+	private Client model;
+	
+	public ClientChatRoomView(Client model, String name) {
 		super(String.format("%s Chat Room", name));
 		
-		this.setSize(750, 500);
+		this.model = model;
+		
+		if(model.getSystemOS().equals("Windows"))
+			this.setSize(770, 525);
+		else if(model.getSystemOS().equals("Mac"))
+			this.setSize(750, 500);
+		else
+			this.setSize(770, 525);
+		
 		
 		this.init();
 		this.setLayout(null);

@@ -1,19 +1,19 @@
 package client;
 
 import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -22,7 +22,7 @@ import message.Message;
 import message.format.HTMLMessageFormatter;
 import message.format.MessageFormatter;
 
-public class ClientView extends JFrame implements ClientObserver {
+public class ClientGlobalView extends JFrame implements ClientObserver {
 	private static final long serialVersionUID = 1L;
 	private String placeholderName = "Message";
 
@@ -30,98 +30,114 @@ public class ClientView extends JFrame implements ClientObserver {
 	private MessageFormatter messageFormatter;
 
 	private JList<String> userList;
-	private JTextField userName;
 	private JTextField message;
 	private JTextArea chat;
 	private JButton sendMessage;
-	private JButton login;
+	private JButton sendFile;
 	private JButton logout;
+	private JButton showChatRoom;
+	private JButton hideChatRoom;
 	private JPanel chatPanel;
+	private JPanel logoPanel;
 	private JPanel configPanel;
-	private JLabel usernameLabel;
 	private JScrollPane chatScroll;
 	private JScrollPane userListScroll;
 	private JScrollPane messageScroll;
+	private JPopupMenu dmMenu;
+	private JMenuItem privateDM;
+	private JMenuItem createGroupDM;
 	private DefaultListModel<String> usernameList;
 
-	public ClientView(Client model) {
+	public ClientGlobalView(Client model) {
 		super("MonoChrome");
 
 		this.model = model;
 		this.messageFormatter = new HTMLMessageFormatter();
 
 		init();
-		setSize(750, 583);
+		
+		if(model.getSystemOS().equals("Windows"))
+			setSize(770, 600);
+		else if(model.getSystemOS().equals("Mac"))
+			setSize(750, 575);
+		else
+			setSize(770, 600);
+		
 		setLayout(null);
-		setVisible(true);
+		setVisible(false);
 		setResizable(false);
 	}
 
 	// ------------INITIALIZER------------//
-	public void init() {
-		userName = new JTextField();
+	public void init() {		
+		logoPanel = new JPanel();
+		chatPanel = new JPanel();
+		
+		this.chatPanelInit();
+		
+		logoPanel.setBounds(0, 0, 765, 80);
+		chatPanel.setBounds(0, 80, 765, 500);
+		add(logoPanel);
+		add(chatPanel);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+	}
+
+	private void chatPanelInit() {
 		message = new JTextField();
 		chat = new JTextArea("");
 		sendMessage = new JButton("Send");
-		login = new JButton("Login");
-		logout = new JButton("Logout");
-		chatPanel = new JPanel();
-		configPanel = new JPanel();
-		usernameLabel = new JLabel("Username:");
+		sendFile = new JButton("...");
 		chatScroll = new JScrollPane();
 		userListScroll = new JScrollPane();
 		messageScroll = new JScrollPane();
 		usernameList = new DefaultListModel<String>();
 		userList = new JList<String>(usernameList);
-
-		userName.setPreferredSize(new Dimension(200, 30));
-		chatScroll.setPreferredSize(new Dimension(600, 400));
-		userListScroll.setPreferredSize(new Dimension(100, 400));
-		messageScroll.setPreferredSize(new Dimension(600, 40));
-
+		logout = new JButton("Logout");
+		showChatRoom = new JButton("Show Chat Rooms");
+		hideChatRoom = new JButton("Hide Chat Rooms");
+		dmMenu = new JPopupMenu();
+		privateDM = new JMenuItem("Message");
+		createGroupDM = new JMenuItem("Group Message");
+		
 		chatScroll.setViewportView(chat);
 		userListScroll.setViewportView(userList);
 		messageScroll.setViewportView(message);
 
-		logout.setEnabled(false);
-		sendMessage.setEnabled(false);
-		chat.setEditable(false);
-		message.setEnabled(false);
-		userList.setVisible(false);
-		chat.setVisible(false);
-
-		configPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		chatPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-
 		message.setText(placeholderName);
 		message.setForeground(Color.GRAY);
+		
+		dmMenu.add(privateDM);
+		dmMenu.add(createGroupDM);
+		
+		chat.setEditable(false);
+		chat.setLineWrap(true);
+		
+		showChatRoom.setMargin(new Insets(0,0,0,0));
+		logout.setMargin(new Insets(0,0,0,0));
 
-		configPanel.add(usernameLabel);
-		configPanel.add(userName);
-		configPanel.add(login);
-		configPanel.add(logout);
-
+		chatPanel.setLayout(null);
+		chatPanel.add(messageScroll);
+		chatPanel.add(showChatRoom);
+		chatPanel.add(hideChatRoom);
+		chatPanel.add(logout);
 		chatPanel.add(chatScroll);
 		chatPanel.add(userListScroll);
-		chatPanel.add(messageScroll);
 		chatPanel.add(sendMessage);
-
-		configPanel.setBounds(0, 0, 750, 50);
-		chatPanel.setBounds(0, 50, 750, 511);
-
-		add(configPanel);
-		add(chatPanel);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		chatPanel.add(sendFile);
+		
+		chatScroll.setBounds(5,5,550,400);
+		showChatRoom.setBounds(560, 5, 175, 40);
+		hideChatRoom.setBounds(560, 5, 175, 40);
+		userListScroll.setBounds(560, 50, 175, 300);
+		logout.setBounds(560,360, 175, 40);
+		messageScroll.setBounds(5, 410, 550, 50);
+		sendMessage.setBounds(560, 410, 125, 50);
+		sendFile.setBounds(690, 410, 45, 50);
+		
 	}
+
 
 	// ------------LISTENERS------------//
-	public void addLoginBoxListener(KeyListener e) {
-		userName.addKeyListener(e);
-	}
-
-	public void addLoginListener(ActionListener e) {
-		login.addActionListener(e);
-	}
 
 	public void addLogoutListener(ActionListener e) {
 		logout.addActionListener(e);
@@ -138,6 +154,27 @@ public class ClientView extends JFrame implements ClientObserver {
 
 	public void addUserListListener(MouseListener e) {
 		userList.addMouseListener(e);
+	}
+	
+	public void addShowChatRoomsListener(ActionListener e) {
+		showChatRoom.addActionListener(e);
+	}
+	
+	public void addHideChatRoomsListener(ActionListener e) {
+		hideChatRoom.addActionListener(e);
+	}
+	
+	public void addMessageMenuListener(ActionListener e) {
+		privateDM.addActionListener(e);
+	}
+	
+	public void addGroupMessageMenuListener(ActionListener e) {
+		createGroupDM.addActionListener(e);
+		
+	}
+	
+	public void addSendFileListener(ActionListener e) {
+		sendFile.addActionListener(e);
 	}
 
 	// ------------UPDATE METHODS------------//
@@ -174,14 +211,6 @@ public class ClientView extends JFrame implements ClientObserver {
 		this.userList = userList;
 	}
 
-	public JTextField getUserName() {
-		return userName;
-	}
-
-	public void setUserName(JTextField userName) {
-		this.userName = userName;
-	}
-
 	public JTextField getMessage() {
 		return message;
 	}
@@ -206,22 +235,6 @@ public class ClientView extends JFrame implements ClientObserver {
 		this.sendMessage = sendMessage;
 	}
 
-	public JButton getLogin() {
-		return login;
-	}
-
-	public void setLogin(JButton login) {
-		this.login = login;
-	}
-
-	public JButton getLogout() {
-		return logout;
-	}
-
-	public void setLogout(JButton logout) {
-		this.logout = logout;
-	}
-
 	public JPanel getChatPanel() {
 		return chatPanel;
 	}
@@ -236,14 +249,6 @@ public class ClientView extends JFrame implements ClientObserver {
 
 	public void setConfigPanel(JPanel configPanel) {
 		this.configPanel = configPanel;
-	}
-
-	public JLabel getUsernameLabel() {
-		return usernameLabel;
-	}
-
-	public void setUsernameLabel(JLabel usernameLabel) {
-		this.usernameLabel = usernameLabel;
 	}
 
 	public JScrollPane getChatScroll() {
@@ -276,5 +281,61 @@ public class ClientView extends JFrame implements ClientObserver {
 
 	public void setUsernameList(DefaultListModel<String> usernameList) {
 		this.usernameList = usernameList;
+	}
+
+	public JButton getSendFile() {
+		return sendFile;
+	}
+
+	public void setSendFile(JButton sendFile) {
+		this.sendFile = sendFile;
+	}
+
+	public JButton getLogout() {
+		return logout;
+	}
+
+	public void setLogout(JButton logout) {
+		this.logout = logout;
+	}
+
+	public JButton getShowChatRoom() {
+		return showChatRoom;
+	}
+
+	public void setShowChatRoom(JButton showChatRoom) {
+		this.showChatRoom = showChatRoom;
+	}
+	
+	public JButton getHideChatRoom() {
+		return hideChatRoom;
+	}
+
+	public void setHideChatRoom(JButton hideChatRoom) {
+		this.hideChatRoom = hideChatRoom;
+	}
+	
+	public JPopupMenu getDmMenu() {
+		return dmMenu;
+	}
+
+	public void setDmMenu(JPopupMenu dmMenu) {
+		this.dmMenu = dmMenu;
+	}
+
+	public JMenuItem getPrivateDM() {
+		return privateDM;
+	}
+
+	public void setPrivateDM(JMenuItem privateDM) {
+		this.privateDM = privateDM;
+	}
+
+	public JMenuItem getCreateGroupDM() {
+		return createGroupDM;
+	}
+
+	public void setCreateGroupDM(JMenuItem createGroupDM) {
+		this.createGroupDM = createGroupDM;
 	}
 }

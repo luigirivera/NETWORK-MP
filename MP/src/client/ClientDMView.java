@@ -1,5 +1,6 @@
 package client;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
@@ -19,7 +20,7 @@ import message.format.MessageFormatter;
 
 public class ClientDMView extends JFrame implements ClientObserver {
 	private static final long serialVersionUID = 1L;
-	private static final String placeholderName = "Message";
+	private static final String messagePlaceholderName = "Message";
 
 	private Client model;
 	private String destUser;
@@ -31,6 +32,7 @@ public class ClientDMView extends JFrame implements ClientObserver {
 	private JTextArea dmChat;
 	private JScrollPane dmChatScroll;
 	private JScrollPane dmMessageScroll;
+	private JButton dmSendFile;
 
 	public ClientDMView(Client model, String destUser) {
 		super(String.format("%s - MonoChrome", destUser));
@@ -40,7 +42,14 @@ public class ClientDMView extends JFrame implements ClientObserver {
 		this.messageFormatter = new HTMLMessageFormatter();
 
 		init();
-		this.setSize(500, 500);
+		
+		if(model.getSystemOS().equals("Windows"))
+			this.setSize(520, 545);
+		else if(model.getSystemOS().equals("Mac"))
+			this.setSize(500, 520);
+		else
+			this.setSize(520, 545);
+
 		this.setLayout(null);
 		this.setVisible(true);
 		this.setResizable(false);
@@ -50,26 +59,32 @@ public class ClientDMView extends JFrame implements ClientObserver {
 
 	public void init() {
 		dmPanel = new JPanel();
-		dmMessage = new JTextField();
+		dmMessage = new JTextField(messagePlaceholderName);
 		dmSend = new JButton("Send");
 		dmChat = new JTextArea();
 		dmChatScroll = new JScrollPane();
 		dmMessageScroll = new JScrollPane();
+		dmSendFile = new JButton("...");
 
 		dmChatScroll.setViewportView(dmChat);
 		dmMessageScroll.setViewportView(dmMessage);
 
-		dmChatScroll.setPreferredSize(new Dimension(480, 420));
-		dmMessageScroll.setPreferredSize(new Dimension(400, 40));
-
 		dmChat.setEditable(false);
-
+		dmChat.setLineWrap(true);
+		dmMessage.setForeground(Color.GRAY);
+		
+		dmPanel.setLayout(null);
 		dmPanel.add(dmChatScroll);
 		dmPanel.add(dmMessageScroll);
 		dmPanel.add(dmSend);
+		dmPanel.add(dmSendFile);
 		this.add(dmPanel);
-
-		dmPanel.setBounds(0, 0, 500, 478);
+		
+		dmChatScroll.setBounds(5,5,480,420);
+		dmMessageScroll.setBounds(5,430,350,50);
+		dmSend.setBounds(360, 430, 75, 50);
+		dmSendFile.setBounds(440, 430, 50, 50);
+		dmPanel.setBounds(0, 0, 500, 520);
 	}
 
 	// ------------LISTENERS------------//
@@ -84,6 +99,10 @@ public class ClientDMView extends JFrame implements ClientObserver {
 
 	public void addDMWindowListener(WindowListener e) {
 		this.addWindowListener(e);
+	}
+	
+	public void addDmSendFileListener(ActionListener e) {
+		dmSendFile.addActionListener(e);
 	}
 
 	// ------------UPDATE METHODS------------//
@@ -164,8 +183,8 @@ public class ClientDMView extends JFrame implements ClientObserver {
 		return serialVersionUID;
 	}
 
-	public static String getPlaceholdername() {
-		return placeholderName;
+	public static String getMessagePlaceholdername() {
+		return messagePlaceholderName;
 	}
 
 }

@@ -1,15 +1,18 @@
 package chatroom;
 
-import client.*;
+import client.Client;
+import client.ClientLoginController;
+import client.ClientLoginView;
 
 public class ClientDriver {
 
 	public static void main(String[] args) {
-		Client client = new Client();
-		ClientView cView = new ClientView(client);
-		client.attach(cView);
-		ClientController cController = new ClientController(client, cView);
-		cController.init();
+		Client model = new Client();
+		ClientLoginView view = new ClientLoginView(model);
+		ClientLoginController controller = new ClientLoginController(model, view);
+		
+		model.setLoginView(view);
+		controller.init();
 	}
 
 }

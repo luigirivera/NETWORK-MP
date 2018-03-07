@@ -18,7 +18,19 @@ import message.utility.MessageScope;
 
 public class Client {
 	private final static String DEFAULT_SERVER_ADDRESS = "localhost";
-	private final static int DEFAULT_SERVER_PORT = 5000;
+	private final static int DEFAULT_SERVER_PORT = 49162;
+
+	private final String systemOS;
+	{
+		if (System.getProperty("os.name").startsWith("Windows"))
+			systemOS = "Windows";
+
+		else if (System.getProperty("os.name").startsWith("Mac"))
+			systemOS = "Mac";
+
+		else
+			systemOS = "Linux";
+	}
 
 	private String name;
 
@@ -32,14 +44,23 @@ public class Client {
 	private ObjectInputStream inStream;
 	private ObjectOutputStream outStream;
 
-	private List<ClientObserver> observers;
+	private ClientLoginView loginView;
+	private ClientGlobalView globalView;
+	private ClientChatRoomListView chatroomListView;
+
+	private List<ClientDMView> DMViews;
+	private List<ClientGroupDMView> groupDMViews;
+	private List<ClientChatRoomView> chatroomViews;
 
 	public Client() {
 		this.serverAddress = DEFAULT_SERVER_ADDRESS;
 		this.serverPort = DEFAULT_SERVER_PORT;
 		this.messageFormatter = new PlainMessageFormatter();
 		this.messageRouter = new ClientMessageRouter(this);
-		this.observers = new ArrayList<ClientObserver>();
+
+		this.DMViews = new ArrayList<ClientDMView>();
+		this.groupDMViews = new ArrayList<ClientGroupDMView>();
+		this.chatroomViews = new ArrayList<ClientChatRoomView>();
 	}
 
 	class MessageReceiver implements Runnable {
@@ -66,10 +87,12 @@ public class Client {
 		}
 	}
 
-	public void openSocket() throws IOException {
+	public void openSocket(String address, int port) throws IOException {
 		if (socket != null && !socket.isClosed())
 			closeSocket();
-		socket = new Socket(serverAddress, serverPort);
+		socket = new Socket(address, port);
+		serverAddress = address;
+		serverPort = port;
 		this.initStreams();
 	}
 
@@ -78,25 +101,24 @@ public class Client {
 		inStream = new ObjectInputStream(socket.getInputStream());
 		outStream.flush();
 	}
-	
+
 	public boolean attemptLogin(String username) throws IOException, ClassNotFoundException {
-		Message<?> message = MessageFactory.getInstance(
-				new LoginAttempt(username)
-				);
+		Message<?> message = MessageFactory.getInstance(new LoginAttempt(username));
 		this.sendMessage(message);
-		
-		LoginResultMessage response = (LoginResultMessage)this.readMessage();
-		switch(response.getContent()) {
-		case SUCCESS: 
+
+		LoginResultMessage response = (LoginResultMessage) this.readMessage();
+		switch (response.getContent()) {
+		case SUCCESS:
 			this.name = username;
 			Thread thread = new Thread(new MessageReceiver(this));
 			thread.start();
 			return true;
-		case FAILED: 
-			//append "Username already in use" to global chat view
-			System.out.println("Username already in use"); //debug
+		case FAILED:
+			// append "Username already in use" to global chat view
+			System.out.println("Username already in use"); // debug
 			this.closeSocket();
-		default: return false;
+		default:
+			return false;
 		}
 	}
 
@@ -143,14 +165,6 @@ public class Client {
 		this.sendMessage(message);
 	}
 
-	public void attach(ClientObserver obs) {
-		this.observers.add(obs);
-	}
-
-	public void detach(ClientObserver obs) {
-		this.observers.remove(obs);
-	}
-
 	public Socket getSocket() {
 		return socket;
 	}
@@ -167,8 +181,43 @@ public class Client {
 		this.name = name;
 	}
 
-	public List<ClientObserver> getObservers() {
-		return observers;
+	public ClientGlobalView getGlobalView() {
+		return globalView;
 	}
 
+	public void setGlobalView(ClientGlobalView globalView) {
+		this.globalView = globalView;
+	}
+
+	public ClientLoginView getLoginView() {
+		return loginView;
+	}
+
+	public void setLoginView(ClientLoginView loginView) {
+		this.loginView = loginView;
+	}
+
+	public ClientChatRoomListView getChatroomListView() {
+		return chatroomListView;
+	}
+
+	public void setChatroomListView(ClientChatRoomListView chatroomListView) {
+		this.chatroomListView = chatroomListView;
+	}
+
+	public List<ClientDMView> getDMViews() {
+		return DMViews;
+	}
+
+	public List<ClientGroupDMView> getGroupDMViews() {
+		return groupDMViews;
+	}
+
+	public List<ClientChatRoomView> getChatroomViews() {
+		return chatroomViews;
+	}
+
+	public String getSystemOS() {
+		return systemOS;
+	}
 }

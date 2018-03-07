@@ -1,6 +1,7 @@
 package server;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -19,11 +20,24 @@ public class Server {
 	private ServerSocket serverSocket;
 	private UserConnectionList connections;
 	private List<ServerObserver> observers;
+	
+	private SocketListen listenerSocket;
 
 	private MessageFormatter messageFormatter;
 	private MessageRouter messageRouter;
+	
+	private final String systemOS;
 
-	private final static int PORT = 5000;
+	{
+		if(System.getProperty("os.name").startsWith("Windows"))
+			systemOS = "Windows";
+			
+		else if(System.getProperty("os.name").startsWith("Mac"))
+			systemOS = "Mac";
+			
+		else
+			systemOS = "Linux";	
+	}
 
 	public Server() {
 		connections = new UserConnectionList();
@@ -32,29 +46,41 @@ public class Server {
 		messageRouter = new ServerMessageRouter(this);
 	}
 
-	public void init() {
+	public boolean init(int port) {
 		try {
-			serverSocket = new ServerSocket(PORT);
+			serverSocket = new ServerSocket(port);
 
 			this.log("Server started!");
 			this.log("Server IP: " + InetAddress.getLocalHost() + " ; Port: " + serverSocket.getLocalPort());
-			Thread slThread = new Thread(new SocketListen(this));
+			
+			listenerSocket = new SocketListen(this);
+			Thread slThread = new Thread(listenerSocket);
 			slThread.start();
-		} catch (Exception e) {
-			e.printStackTrace();
+			
+			return true;
 		}
+		catch(BindException e) {
+			this.log("Port: " + port + " is already in use");
+			return false;
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		} 
 	}
 
 	class SocketListen implements Runnable {
 		private Server server;
+		private boolean isRunning;
 
 		public SocketListen(Server server) {
 			this.server = server;
+			isRunning = true;
 		}
 
 		@Override
 		public void run() {
-			while (true) {
+			while (isRunning) {
 				try {
 					Socket socket = serverSocket.accept();
 					this.server.addUser(socket);
@@ -62,6 +88,10 @@ public class Server {
 					e.printStackTrace();
 				}
 			}
+		}
+		
+		public void stop() {
+			isRunning = false;
 		}
 	}
 
@@ -185,6 +215,7 @@ public class Server {
 		for (ServerObserver ob : observers)
 			ob.update(text);
 	}
+	
 
 	public ServerSocket getServer() {
 		return serverSocket;
@@ -196,6 +227,18 @@ public class Server {
 
 	public List<ServerObserver> getObservers() {
 		return observers;
+	}
+	
+	public SocketListen getListenerSocket() {
+		return listenerSocket;
+	}
+
+	public void setListenerSocket(SocketListen listenerSocket) {
+		this.listenerSocket = listenerSocket;
+	}
+	
+	public String getSystemOS() {
+		return systemOS;
 	}
 
 }

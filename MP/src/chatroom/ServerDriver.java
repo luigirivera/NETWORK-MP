@@ -10,11 +10,8 @@ public class ServerDriver {
 		Server server = new Server();
 		ServerView sView = new ServerView(server);
 		ServerController sControl = new ServerController(server, sView);
-		
-		
-		sView.init();
+
 		server.attach(sView);
-		server.init();
 		sControl.init();
 		
 		

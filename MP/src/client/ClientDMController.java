@@ -11,8 +11,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
 
-import shared.DirectMessage;
-
 public class ClientDMController {
 	private Client model;
 	private ClientDMView view;

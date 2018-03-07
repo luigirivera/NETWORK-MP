@@ -5,7 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-import shared.Message;
+import message.Message;
 
 public class UserConnection {
 	private User user;
@@ -25,8 +25,8 @@ public class UserConnection {
 		}
 	}
 
-	public Message readMessage() throws IOException, ClassNotFoundException {
-		Message message = (Message) this.getInStream().readObject();
+	public Message<?> readMessage() throws IOException, ClassNotFoundException {
+		Message<?> message = (Message<?>) this.getInStream().readObject();
 		return message;
 	}
 

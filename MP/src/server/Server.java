@@ -7,12 +7,13 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import shared.ConcreteMessageFormatter;
-import shared.DirectMessage;
-import shared.Message;
-import shared.MessageFormatter;
-import shared.MessageRouter;
-import shared.UserListMessage;
+import message.Message;
+import message.content.LoginResult;
+import message.content.UsernameList;
+import message.format.MessageFormatter;
+import message.format.PlainMessageFormatter;
+import message.utility.MessageFactory;
+import message.utility.MessageRouter;
 
 public class Server {
 	private ServerSocket serverSocket;
@@ -27,7 +28,7 @@ public class Server {
 	public Server() {
 		connections = new UserConnectionList();
 		observers = new ArrayList<ServerObserver>();
-		messageFormatter = new ConcreteMessageFormatter();
+		messageFormatter = new PlainMessageFormatter();
 		messageRouter = new ServerMessageRouter(this);
 	}
 
@@ -85,8 +86,7 @@ public class Server {
 		public void run() {
 			try {
 				while (this.checkConnection()) {
-					Message message = connection.readMessage();
-					messageRouter.route(message);
+					messageRouter.route(connection.readMessage());
 				}
 			} catch (IOException e) {
 			} catch (ClassNotFoundException e) {
@@ -102,33 +102,30 @@ public class Server {
 
 	private void addUser(Socket socket) throws IOException, ClassNotFoundException {
 		UserConnection uc = new UserConnection(new User(), socket);
-		Message initMessage = (Message) uc.getInStream().readObject();
-        if(isUsernameUnique(initMessage.getSender())) {
-    			uc.getUser().setName(initMessage.getSender());
-            connections.add(uc);
-            this.blastMessage(String.format("%s joined the chat. Say hi!", uc.getUser().getName()));
-            this.log(uc.getUser().getName() + " connected from: " + socket.getRemoteSocketAddress());
-            this.blastUserList();
-            Thread thread = new Thread(new ConnectionMaintainer(this, uc));
-            thread.start();
-        }
-        else {
-            System.out.println("Username already taken!");
-            Message msg = new Message();
-            msg.setSender("Server");
-            msg.setContent("Username already in use");
-            uc.getOutStream().writeObject(msg);
-            socket.close();
-        }                  
+		Message<?> initMessage = uc.readMessage();
+		if (isUsernameUnique(initMessage.getSource())) {
+			uc.getUser().setName(initMessage.getSource());
+			connections.add(uc);
+			this.sendMessage(MessageFactory.getInstance(LoginResult.SUCCESS), uc);
+			this.blastMessage(String.format("%s joined the chat. Say hi!", uc.getUser().getName()));
+			this.log(uc.getUser().getName() + " connected from: " + socket.getRemoteSocketAddress());
+			this.blastUsernameList();
+			Thread thread = new Thread(new ConnectionMaintainer(this, uc));
+			thread.start();
+		} else {
+			this.log(socket.getRemoteSocketAddress() + "rejected: username taken");
+			this.sendMessage(MessageFactory.getInstance(LoginResult.FAILED), uc);
+			socket.close();
+		}
 	}
-	
+
 	private boolean isUsernameUnique(String username) {
-        for(UserConnection x: connections) {
-            if(x.getUser().getName().equalsIgnoreCase(username)) {
-                   return false;
-            }
-        }
-        return true;
+		for (UserConnection x : connections) {
+			if (x.getUser().getName().equalsIgnoreCase(username)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public void closeConnection(UserConnection connection) throws IOException {
@@ -136,30 +133,28 @@ public class Server {
 		connections.remove(connection);
 		this.log(connection.getUser().getName() + " disconnected");
 		this.blastMessage(connection.getUser().getName() + " disconnected");
-		this.blastUserList();
+		this.blastUsernameList();
 	}
-	
-	public void blastUserList() {
+
+	public void blastUsernameList() {
 		List<String> usernames = connections.getUsernames();
-		UserListMessage message = new UserListMessage();
-		message.setUsernames(usernames);
+		Message<?> message = MessageFactory.getInstance(usernames);
 		this.blastMessage(message);
 	}
 
-	public void blastMessage(Message message) {
+	public void blastMessage(Message<?> message) {
 		for (UserConnection connection : connections) {
 			this.sendMessage(message, connection);
 		}
 	}
 
 	public void blastMessage(String content) {
-		Message message = new Message();
-		message.setSender("Server");
-		message.setContent(content);
+		Message<?> message = MessageFactory.getInstance(content);
+		message.setSource("Server");
 		this.blastMessage(message);
 	}
 
-	public void sendMessage(Message message, UserConnection dest) {
+	public void sendMessage(Message<?> message, UserConnection dest) {
 		try {
 			dest.getOutStream().flush();
 			dest.getOutStream().reset();
@@ -170,11 +165,10 @@ public class Server {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void sendMessage(String content, UserConnection dest) {
-		Message message = new Message();
-		message.setSender("Server");
-		message.setContent(content);
+		Message<?> message = MessageFactory.getInstance(content);
+		message.setSource("Server");
 		this.sendMessage(message, dest);
 	}
 
@@ -182,7 +176,7 @@ public class Server {
 		observers.add(obs);
 	}
 
-	public void log(Message message) {
+	public void log(Message<?> message) {
 		this.log(messageFormatter.format(message));
 	}
 
@@ -206,24 +200,24 @@ public class Server {
 
 }
 
-class UserConnectionList extends ArrayList<UserConnection>{
+class UserConnectionList extends ArrayList<UserConnection> {
 	private static final long serialVersionUID = 1L;
-	
+
 	public UserConnection get(String name) {
-		for(UserConnection connection : this) {
-			if(connection.getUser().getName().equalsIgnoreCase(name))
+		for (UserConnection connection : this) {
+			if (connection.getUser().getName().equalsIgnoreCase(name))
 				return connection;
 		}
 		return null;
 	}
-	
+
 	public boolean contains(String name) {
 		return this.get(name) != null;
 	}
-	
-	public List<String> getUsernames() {
-		List<String> usernames = new ArrayList<String>();
-		for(UserConnection connection : this) {
+
+	public UsernameList getUsernames() {
+		UsernameList usernames = new UsernameList();
+		for (UserConnection connection : this) {
 			usernames.add(connection.getUser().getName());
 		}
 		return usernames;

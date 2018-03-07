@@ -1,12 +1,10 @@
 package client;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import shared.DirectMessage;
-import shared.Message;
-import shared.MessageRouter;
-import shared.UserListMessage;
+import message.FileMessage;
+import message.Message;
+import message.TextMessage;
+import message.UsernameListMessage;
+import message.utility.MessageRouter;
 
 public class ClientMessageRouter implements MessageRouter {
 	private Client client;
@@ -16,9 +14,10 @@ public class ClientMessageRouter implements MessageRouter {
 	}
 
 	@Override
-	public void route(Message message) {
+	public void route(Message<?> message) {
 		
-		if (message instanceof DirectMessage) {
+		
+		/*if (message instanceof DirectMessage) {
 			boolean found = false;
 			for (ClientObserver obs : client.getObservers()) {
 				if (obs instanceof ClientDMView && (((ClientDMView) obs).getDestUser()
@@ -60,6 +59,30 @@ public class ClientMessageRouter implements MessageRouter {
 			for(ClientObserver obs : client.getObservers()) {
 				if(obs instanceof ClientView)
 					obs.appendChat(message);
+			}
+		}*/
+		
+		if(message instanceof TextMessage) {
+			switch(message.getScope()) {
+			case GLOBAL: break;
+			case DIRECT: break;
+			case GROUP: break;
+			default: break;
+			}
+		}
+		else if (message instanceof FileMessage) {
+			switch(message.getScope()) {
+			case GLOBAL: break;
+			case DIRECT: break;
+			case GROUP: break;
+			default: break;
+			}
+		}
+		else if (message instanceof UsernameListMessage) {
+			switch(message.getScope()) {
+			case GLOBAL: break;
+			case GROUP: break;
+			default: break;
 			}
 		}
 	}

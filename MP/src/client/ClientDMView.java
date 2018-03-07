@@ -13,9 +13,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import shared.ConcreteMessageFormatter;
-import shared.Message;
-import shared.MessageFormatter;
+import message.Message;
+import message.format.HTMLMessageFormatter;
+import message.format.MessageFormatter;
 
 public class ClientDMView extends JFrame implements ClientObserver {
 	private static final long serialVersionUID = 1L;
@@ -37,7 +37,7 @@ public class ClientDMView extends JFrame implements ClientObserver {
 
 		this.model = model;
 		this.destUser = destUser;
-		this.messageFormatter = new ConcreteMessageFormatter();
+		this.messageFormatter = new HTMLMessageFormatter();
 
 		init();
 		this.setSize(500, 500);
@@ -81,17 +81,17 @@ public class ClientDMView extends JFrame implements ClientObserver {
 		dmMessage.addKeyListener(e);
 		dmMessage.addFocusListener(f);
 	}
-	
+
 	public void addDMWindowListener(WindowListener e) {
 		this.addWindowListener(e);
 	}
 
 	// ------------UPDATE METHODS------------//
 	@Override
-	public void appendChat(Message message) {
+	public void appendChat(Message<?> message) {
 		this.appendChat(messageFormatter.format(message));
 	}
-	
+
 	@Override
 	public void appendChat(String text) {
 		dmChat.setText(dmChat.getText() + text + '\n');

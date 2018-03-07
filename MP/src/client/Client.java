@@ -7,11 +7,14 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import shared.ConcreteMessageFormatter;
-import shared.DirectMessage;
-import shared.Message;
-import shared.MessageFormatter;
-import shared.MessageRouter;
+import message.LoginResultMessage;
+import message.Message;
+import message.content.LoginAttempt;
+import message.format.MessageFormatter;
+import message.format.PlainMessageFormatter;
+import message.utility.MessageFactory;
+import message.utility.MessageRouter;
+import message.utility.MessageScope;
 
 public class Client {
 	private final static String DEFAULT_SERVER_ADDRESS = "localhost";
@@ -34,7 +37,7 @@ public class Client {
 	public Client() {
 		this.serverAddress = DEFAULT_SERVER_ADDRESS;
 		this.serverPort = DEFAULT_SERVER_PORT;
-		this.messageFormatter = new ConcreteMessageFormatter();
+		this.messageFormatter = new PlainMessageFormatter();
 		this.messageRouter = new ClientMessageRouter(this);
 		this.observers = new ArrayList<ClientObserver>();
 	}
@@ -49,7 +52,7 @@ public class Client {
 		public void run() {
 			try {
 				while (true) {
-					client.readMessage();
+					client.messageRouter.route(client.readMessage());
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -68,14 +71,33 @@ public class Client {
 			closeSocket();
 		socket = new Socket(serverAddress, serverPort);
 		this.initStreams();
-		Thread thread = new Thread(new MessageReceiver(this));
-		thread.start();
 	}
 
 	private void initStreams() throws IOException {
 		outStream = new ObjectOutputStream(socket.getOutputStream());
 		inStream = new ObjectInputStream(socket.getInputStream());
 		outStream.flush();
+	}
+	
+	public boolean attemptLogin(String username) throws IOException, ClassNotFoundException {
+		Message<?> message = MessageFactory.getInstance(
+				new LoginAttempt(username)
+				);
+		this.sendMessage(message);
+		
+		LoginResultMessage response = (LoginResultMessage)this.readMessage();
+		switch(response.getContent()) {
+		case SUCCESS: 
+			this.name = username;
+			Thread thread = new Thread(new MessageReceiver(this));
+			thread.start();
+			return true;
+		case FAILED: 
+			//append "Username already in use" to global chat view
+			System.out.println("Username already in use"); //debug
+			this.closeSocket();
+		default: return false;
+		}
 	}
 
 	public void closeSocket() throws IOException {
@@ -91,13 +113,12 @@ public class Client {
 		outStream.close();
 	}
 
-	public void readMessage() throws IOException, ClassNotFoundException {
-		Message message = (Message) inStream.readObject();
-		messageRouter.route(message);
+	public Message<?> readMessage() throws IOException, ClassNotFoundException {
+		return (Message<?>) inStream.readObject();
 	}
 
-	public void sendMessage(Message message) throws IOException {
-		message.setSender(this.name);
+	public void sendMessage(Message<?> message) throws IOException {
+		message.setSource(this.name);
 		outStream.flush();
 		outStream.reset();
 		outStream.writeObject(message);
@@ -107,16 +128,18 @@ public class Client {
 
 	// dm
 	public void sendMessage(String text, String destUser) throws IOException {
-		DirectMessage message = new DirectMessage();
-		message.setContent(text);
-		message.setRecipient(destUser);
+		Message<?> message = MessageFactory.getInstance(text);
+		message.setSource(this.name);
+		message.setDestination(destUser);
+		message.setScope(MessageScope.DIRECT);
 		this.sendMessage(message);
 	}
 
 	// global
 	public void sendMessage(String text) throws IOException {
-		Message message = new Message();
-		message.setContent(text);
+		Message<?> message = MessageFactory.getInstance(text);
+		message.setSource(this.name);
+		message.setScope(MessageScope.GLOBAL);
 		this.sendMessage(message);
 	}
 

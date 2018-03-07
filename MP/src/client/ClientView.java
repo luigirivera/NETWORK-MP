@@ -18,9 +18,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import shared.ConcreteMessageFormatter;
-import shared.Message;
-import shared.MessageFormatter;
+import message.Message;
+import message.format.HTMLMessageFormatter;
+import message.format.MessageFormatter;
 
 public class ClientView extends JFrame implements ClientObserver {
 	private static final long serialVersionUID = 1L;
@@ -48,7 +48,7 @@ public class ClientView extends JFrame implements ClientObserver {
 		super("MonoChrome");
 
 		this.model = model;
-		this.messageFormatter = new ConcreteMessageFormatter();
+		this.messageFormatter = new HTMLMessageFormatter();
 
 		init();
 		setSize(750, 583);
@@ -142,7 +142,7 @@ public class ClientView extends JFrame implements ClientObserver {
 
 	// ------------UPDATE METHODS------------//
 	@Override
-	public void appendChat(Message message) {
+	public void appendChat(Message<?> message) {
 		this.appendChat(messageFormatter.format(message));
 	}
 	

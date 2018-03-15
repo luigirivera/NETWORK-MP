@@ -187,7 +187,7 @@ public class ClientGroupDMController {
 			else if(SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2 && !view.getMembers().getSelectedValue().equalsIgnoreCase(model.getName())) {
 				ClientDMView newView = new ClientDMView(model, view.getMembers().getSelectedValue());
 				ClientDMController newController = new ClientDMController(model, newView);
-				model.getDMViews().add(newView);
+				model.getChatViews().add(newView);
 				newController.init();
 			}
 		}
@@ -212,7 +212,7 @@ public class ClientGroupDMController {
 		public void actionPerformed(ActionEvent arg0) {
 			ClientDMView newView = new ClientDMView(model, view.getMembers().getSelectedValue());
 			ClientDMController newController = new ClientDMController(model, newView);
-			model.getDMViews().add(newView);
+			model.getChatViews().add(newView);
 			newController.init();
 			
 		}
@@ -232,7 +232,7 @@ public class ClientGroupDMController {
 		if (!view.getMessage().getText().isEmpty()
 				&& !view.getMessage().getText().equals(ClientGroupDMView.getMessageplaceholdername())) {
 			try {
-				model.sendMessage(view.getMessage().getText(), view.getDestGroup());
+				model.sendMessage(view.getMessage().getText(), view.getDestination());
 			} catch (IOException e) { e.printStackTrace(); }
 			view.getMessage().setText("");
 			view.getMessage().setForeground(Color.GRAY);

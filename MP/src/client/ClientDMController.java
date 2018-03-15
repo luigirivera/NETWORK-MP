@@ -136,7 +136,7 @@ public class ClientDMController {
 		if (!view.getDmMessage().getText().isEmpty()
 				&& !view.getDmMessage().getText().equals(ClientDMView.getMessagePlaceholdername())) {
 			try {
-				model.sendMessage(view.getDmMessage().getText(), view.getDestUser());
+				model.sendMessage(view.getDmMessage().getText(), view.getDestination());
 			} catch (IOException e) { e.printStackTrace(); }
 			view.getDmMessage().setText("");
 			view.getDmMessage().setForeground(Color.GRAY);
@@ -150,7 +150,7 @@ public class ClientDMController {
 
 		@Override
 		public void windowClosing(WindowEvent e) {
-			model.getDMViews().remove(view);
+			model.getChatViews().remove(view);
 		}
 
 		@Override

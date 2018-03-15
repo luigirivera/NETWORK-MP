@@ -4,6 +4,7 @@ import message.FileMessage;
 import message.Message;
 import message.TextMessage;
 import message.UsernameListMessage;
+import message.content.UsernameList;
 import message.utility.MessageRouter;
 
 public class ClientMessageRouter implements MessageRouter {
@@ -63,27 +64,54 @@ public class ClientMessageRouter implements MessageRouter {
 		}*/
 		
 		if(message instanceof TextMessage) {
-			switch(message.getScope()) {
-			case GLOBAL: break;
-			case DIRECT: break;
-			case GROUP: break;
-			default: break;
+			ChatView cv = client.getChatViews().getAssociatedView(message);
+			if (cv!=null)
+				cv.appendChat(message);
+			else {
+				this.openNewView(message);
 			}
 		}
 		else if (message instanceof FileMessage) {
-			switch(message.getScope()) {
-			case GLOBAL: break;
-			case DIRECT: break;
-			case GROUP: break;
-			default: break;
+			ChatView cv = client.getChatViews().getAssociatedView(message);
+			if (cv!=null)
+				cv.appendChat(message);
+			else {
+				this.openNewView(message);
 			}
 		}
 		else if (message instanceof UsernameListMessage) {
-			switch(message.getScope()) {
-			case GLOBAL: break;
-			case GROUP: break;
-			default: break;
+			ChatView temp = client.getChatViews().getAssociatedView(message);
+			if (temp instanceof ShowsUsernameList) {
+				((ShowsUsernameList) temp).updateUsernameList((UsernameList)message.getContent());
 			}
+		}
+	}
+	
+	private void openNewView(Message<?> message) {
+		ChatView cv;
+		switch (message.getScope()) {
+		case DIRECT:
+			cv = new ClientDMView(client, message.getSource());
+			ClientDMController newController = new ClientDMController(client, (ClientDMView)cv);
+			client.getChatViews().add(cv);
+			newController.init();
+			cv.appendChat(message);
+			break;
+		case GROUP:
+			cv = new ClientGroupDMView(client, message.getSource());
+			ClientGroupDMController newGroupController = new ClientGroupDMController(client, (ClientGroupDMView)cv);
+			client.getChatViews().add(cv);
+			newGroupController.init();
+			cv.appendChat(message);
+			break;
+		case ROOM:
+			cv = new ClientGroupDMView(client, message.getSource());
+			ClientChatRoomController newRoomController = new ClientChatRoomController(client, (ClientChatRoomView)cv);
+			client.getChatViews().add(cv);
+			newRoomController.init();
+			cv.appendChat(message);
+			break;
+		default: break;
 		}
 	}
 }

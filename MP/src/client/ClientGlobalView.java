@@ -2,10 +2,12 @@ package client;
 
 import java.awt.Color;
 import java.awt.Insets;
+import java.awt.TextField;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -15,14 +17,19 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.UIManager;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.html.HTMLDocument;
 
 import message.Message;
+import message.content.UsernameList;
 import message.format.HTMLMessageFormatter;
 import message.format.MessageFormatter;
+import message.utility.MessageScope;
 
-public class ClientGlobalView extends JFrame implements ClientObserver {
+public class ClientGlobalView extends JFrame implements ChatView, ShowsUsernameList {
 	private static final long serialVersionUID = 1L;
 	private String placeholderName = "Message";
 
@@ -31,7 +38,8 @@ public class ClientGlobalView extends JFrame implements ClientObserver {
 
 	private JList<String> userList;
 	private JTextField message;
-	private JTextArea chat;
+	//private JTextArea chat;
+	private JTextPane chat;
 	private JButton sendMessage;
 	private JButton sendFile;
 	private JButton logout;
@@ -84,7 +92,8 @@ public class ClientGlobalView extends JFrame implements ClientObserver {
 
 	private void chatPanelInit() {
 		message = new JTextField();
-		chat = new JTextArea("");
+		//chat = new JTextArea("");
+		chat = new JTextPane();
 		sendMessage = new JButton("Send");
 		sendFile = new JButton("...");
 		chatScroll = new JScrollPane();
@@ -99,6 +108,11 @@ public class ClientGlobalView extends JFrame implements ClientObserver {
 		privateDM = new JMenuItem("Message");
 		createGroupDM = new JMenuItem("Group Message");
 		
+		chat.setContentType("text/html");
+		chat.setText("");
+		HTMLDocument doc = (HTMLDocument) chat.getStyledDocument();
+		doc.getStyleSheet().addRule("body {font-family: Helvetica; font-size: 14; }");
+		
 		chatScroll.setViewportView(chat);
 		userListScroll.setViewportView(userList);
 		messageScroll.setViewportView(message);
@@ -110,7 +124,7 @@ public class ClientGlobalView extends JFrame implements ClientObserver {
 		dmMenu.add(createGroupDM);
 		
 		chat.setEditable(false);
-		chat.setLineWrap(true);
+		//chat.setLineWrap(true);
 		
 		showChatRoom.setMargin(new Insets(0,0,0,0));
 		logout.setMargin(new Insets(0,0,0,0));
@@ -177,24 +191,53 @@ public class ClientGlobalView extends JFrame implements ClientObserver {
 		sendFile.addActionListener(e);
 	}
 
-	// ------------UPDATE METHODS------------//
+	// ------------OVERRIDE METHODS------------//
+	@Override
+	public MessageScope getScope() {
+		return MessageScope.GLOBAL;
+	}
+	
+	@Override
+	public String getDestination() {
+		return null;
+	}
+	
 	@Override
 	public void appendChat(Message<?> message) {
 		this.appendChat(messageFormatter.format(message));
 	}
-	
+
 	@Override
 	public void appendChat(String text) {
-		chat.setText(chat.getText() + text + '\n');
-		chat.setCaretPosition(chat.getDocument().getLength());
+		/*chat.setText(chat.getText() + text + "<br>");
+		chat.setCaretPosition(chat.getDocument().getLength());*/
+		try {
+			HTMLDocument doc = (HTMLDocument) chat.getStyledDocument();
+			doc.insertAfterEnd(doc.getCharacterElement(doc.getLength()), text + "<br>");
+			chat.setCaretPosition(doc.getLength());
+		} catch (IOException e) {
+		} catch (BadLocationException e) {}
 	}
 
 	@Override
 	public void clearChat() {
-		chat.setText("");
+		try {
+			HTMLDocument doc = (HTMLDocument) chat.getStyledDocument();
+			doc.remove(0, doc.getLength());
+		} catch (BadLocationException e) {}
+	}
+	
+	
+	@Override
+	public void updateUsernameList(UsernameList usernames) {
+		usernameList.clear();
+		for (String str : usernames) {
+			usernameList.addElement(str);
+		}
 	}
 
 	// ------------GETTERS AND SETTERS------------//
+
 	public Client getModel() {
 		return model;
 	}
@@ -219,11 +262,11 @@ public class ClientGlobalView extends JFrame implements ClientObserver {
 		this.message = message;
 	}
 
-	public JTextArea getChat() {
+	public JTextPane getChat() {
 		return chat;
 	}
 
-	public void setChat(JTextArea chat) {
+	public void setChat(JTextPane chat) {
 		this.chat = chat;
 	}
 

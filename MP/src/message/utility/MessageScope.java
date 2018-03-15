@@ -1,5 +1,5 @@
 package message.utility;
 
 public enum MessageScope {
-	GLOBAL, DIRECT, GROUP;
+	GLOBAL, DIRECT, GROUP, ROOM;
 }

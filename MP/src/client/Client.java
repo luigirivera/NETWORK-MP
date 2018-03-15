@@ -7,6 +7,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import message.LoginResultMessage;
 import message.Message;
 import message.content.LoginAttempt;
@@ -45,12 +47,9 @@ public class Client {
 	private ObjectOutputStream outStream;
 
 	private ClientLoginView loginView;
-	private ClientGlobalView globalView;
 	private ClientChatRoomListView chatroomListView;
 
-	private List<ClientDMView> DMViews;
-	private List<ClientGroupDMView> groupDMViews;
-	private List<ClientChatRoomView> chatroomViews;
+	private ChatViewList chatViews;
 
 	public Client() {
 		this.serverAddress = DEFAULT_SERVER_ADDRESS;
@@ -58,9 +57,7 @@ public class Client {
 		this.messageFormatter = new PlainMessageFormatter();
 		this.messageRouter = new ClientMessageRouter(this);
 
-		this.DMViews = new ArrayList<ClientDMView>();
-		this.groupDMViews = new ArrayList<ClientGroupDMView>();
-		this.chatroomViews = new ArrayList<ClientChatRoomView>();
+		this.chatViews = new ChatViewList();
 	}
 
 	class MessageReceiver implements Runnable {
@@ -102,22 +99,27 @@ public class Client {
 		outStream.flush();
 	}
 
-	public boolean attemptLogin(String username) throws IOException, ClassNotFoundException {
-		Message<?> message = MessageFactory.getInstance(new LoginAttempt(username));
-		this.sendMessage(message);
+	public boolean attemptLogin(String username) {
+		try {
+			Message<?> message = MessageFactory.getInstance(new LoginAttempt(username));
+			this.sendMessage(message);
 
-		LoginResultMessage response = (LoginResultMessage) this.readMessage();
-		switch (response.getContent()) {
-		case SUCCESS:
-			this.name = username;
-			Thread thread = new Thread(new MessageReceiver(this));
-			thread.start();
-			return true;
-		case FAILED:
-			// append "Username already in use" to global chat view
-			System.out.println("Username already in use"); // debug
-			this.closeSocket();
-		default:
+			LoginResultMessage response = (LoginResultMessage) this.readMessage();
+			switch (response.getContent()) {
+			case SUCCESS:
+				this.name = username;
+				Thread thread = new Thread(new MessageReceiver(this));
+				thread.start();
+				return true;
+			case FAILED:
+				loginView.showFailedMessage(response.getContent());
+				this.closeSocket();
+			default:
+				return false;
+			}
+		} catch (IOException e) {
+			return false;
+		} catch (ClassNotFoundException e) {
 			return false;
 		}
 	}
@@ -140,7 +142,7 @@ public class Client {
 	}
 
 	public void sendMessage(Message<?> message) throws IOException {
-		message.setSource(this.name);
+		// setting source now done server-side according to name in UserConnection
 		outStream.flush();
 		outStream.reset();
 		outStream.writeObject(message);
@@ -151,7 +153,6 @@ public class Client {
 	// dm
 	public void sendMessage(String text, String destUser) throws IOException {
 		Message<?> message = MessageFactory.getInstance(text);
-		message.setSource(this.name);
 		message.setDestination(destUser);
 		message.setScope(MessageScope.DIRECT);
 		this.sendMessage(message);
@@ -160,7 +161,6 @@ public class Client {
 	// global
 	public void sendMessage(String text) throws IOException {
 		Message<?> message = MessageFactory.getInstance(text);
-		message.setSource(this.name);
 		message.setScope(MessageScope.GLOBAL);
 		this.sendMessage(message);
 	}
@@ -181,14 +181,6 @@ public class Client {
 		this.name = name;
 	}
 
-	public ClientGlobalView getGlobalView() {
-		return globalView;
-	}
-
-	public void setGlobalView(ClientGlobalView globalView) {
-		this.globalView = globalView;
-	}
-
 	public ClientLoginView getLoginView() {
 		return loginView;
 	}
@@ -205,16 +197,12 @@ public class Client {
 		this.chatroomListView = chatroomListView;
 	}
 
-	public List<ClientDMView> getDMViews() {
-		return DMViews;
+	public ChatViewList getChatViews() {
+		return chatViews;
 	}
 
-	public List<ClientGroupDMView> getGroupDMViews() {
-		return groupDMViews;
-	}
-
-	public List<ClientChatRoomView> getChatroomViews() {
-		return chatroomViews;
+	public void setChatViews(ChatViewList chatViews) {
+		this.chatViews = chatViews;
 	}
 
 	public String getSystemOS() {

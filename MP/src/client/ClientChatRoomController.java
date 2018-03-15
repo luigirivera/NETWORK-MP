@@ -141,7 +141,7 @@ public class ClientChatRoomController {
 		if (!view.getMessage().getText().isEmpty()
 				&& !view.getMessage().getText().equals(ClientChatRoomView.getMessageplaceholdername())) {
 			try {
-				model.sendMessage(view.getMessage().getText(), view.getDestUser());
+				model.sendMessage(view.getMessage().getText(), view.getDestination());
 			} catch (IOException e) { e.printStackTrace(); }
 			view.getMessage().setText("");
 			view.getMessage().setForeground(Color.GRAY);
@@ -172,7 +172,7 @@ public class ClientChatRoomController {
 				ClientDMView newView = new ClientDMView(model, view.getMembers().getSelectedValue());
 				ClientDMController newController = new ClientDMController(model, newView);
 				newController.init();
-				model.attach(newView);
+				model.getChatViews().add(newView);
 			}
 		}
 
@@ -197,7 +197,7 @@ public class ClientChatRoomController {
 			ClientDMView newView = new ClientDMView(model, view.getMembers().getSelectedValue());
 			ClientDMController newController = new ClientDMController(model, newView);
 			newController.init();
-			model.attach(newView);
+			model.getChatViews().add(newView);
 			
 		}
 		

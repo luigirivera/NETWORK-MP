@@ -9,12 +9,14 @@ import java.awt.event.KeyListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import message.Message;
+import message.content.LoginResult;
 
-public class ClientLoginView extends JFrame implements ClientObserver {
+public class ClientLoginView extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	private Client model;
@@ -99,23 +101,16 @@ public class ClientLoginView extends JFrame implements ClientObserver {
 	}
 	
 	// ------------UPDATE METHODS------------//
-
-	@Override
-	public void appendChat(Message<?> message) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void appendChat(String text) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void clearChat() {
-		// TODO Auto-generated method stub
-		
+	
+	public void showFailedMessage(LoginResult lr) {
+		String message;
+		switch(lr) {
+		case FAILED: 
+			message = "Username already in use";
+			break;
+		default: return;
+		}
+		JOptionPane.showMessageDialog(this, message, "Login failed", JOptionPane.WARNING_MESSAGE);
 	}
 	
 	// ------------GETTERS AND SETTERS------------//

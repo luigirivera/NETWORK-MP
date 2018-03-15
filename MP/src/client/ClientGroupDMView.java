@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -13,17 +14,26 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.html.HTMLDocument;
 
 import message.Message;
+import message.content.UsernameList;
+import message.format.MessageFormatter;
+import message.utility.MessageScope;
 
-public class ClientGroupDMView extends JFrame implements ClientObserver {
+public class ClientGroupDMView extends JFrame implements ChatView{
 
 	private static final long serialVersionUID = 1L;
 	private static final String messagePlaceholderName = "Message";
+	
+	private Client model;
+	private MessageFormatter messageFormatter;
+	private String destination;
 
-	private JTextArea chat;
+	private JTextPane chat;
 	private JButton invite;
 	private JButton sendMessage;
 	private JButton sendFile;
@@ -38,32 +48,31 @@ public class ClientGroupDMView extends JFrame implements ClientObserver {
 	private JMenuItem createGroupDM;
 	private JPanel panel;
 	private DefaultListModel<String> membersList;
-	
-	private Client model;
-	
-	public ClientGroupDMView(Client model, String name) {
-		super(String.format("%s - MonoChrome", name));
-		
+
+	public ClientGroupDMView(Client model, String destination) {
+		super("Group DM - MonoChrome");
+
 		this.model = model;
-		
-		if(model.getSystemOS().equals("Windows"))
+		this.destination = destination;
+
+		if (model.getSystemOS().equals("Windows"))
 			this.setSize(770, 525);
-		else if(model.getSystemOS().equals("Mac"))
+		else if (model.getSystemOS().equals("Mac"))
 			this.setSize(750, 500);
 		else
 			this.setSize(770, 525);
-		
+
 		this.init();
 		this.setLayout(null);
 		this.setVisible(true);
 		this.setResizable(false);
 	}
-	
+
 	// ------------INITIALIZER------------//
-	
+
 	private void init() {
 		panel = new JPanel();
-		chat = new JTextArea();
+		chat = new JTextPane();
 		invite = new JButton("+ Invite");
 		sendMessage = new JButton("Send");
 		sendFile = new JButton("...");
@@ -77,18 +86,21 @@ public class ClientGroupDMView extends JFrame implements ClientObserver {
 		dmMenu = new JPopupMenu();
 		privateDM = new JMenuItem("Message");
 		createGroupDM = new JMenuItem("Group Message");
-		
+
 		membersScroll.setViewportView(members);
 		chatScroll.setViewportView(chat);
 		messageScroll.setViewportView(message);
+
+		chat.setContentType("text/html");
+		chat.setText("");
+		HTMLDocument doc = (HTMLDocument) chat.getStyledDocument();
+		doc.getStyleSheet().addRule("body {font-family: Helvetica; font-size: 14; }");
 		
-		chat.setLineWrap(true);
-		chat.setEditable(false);
 		message.setForeground(Color.GRAY);
-		
+
 		dmMenu.add(privateDM);
 		dmMenu.add(createGroupDM);
-		
+
 		panel.setLayout(null);
 		panel.add(chatScroll);
 		panel.add(membersScroll);
@@ -97,66 +109,83 @@ public class ClientGroupDMView extends JFrame implements ClientObserver {
 		panel.add(sendFile);
 		panel.add(invite);
 		panel.add(leave);
-		
+
 		add(panel);
-		panel.setBounds(0,0,750,500);
-		chatScroll.setBounds(5,5,550,400);
+		panel.setBounds(0, 0, 750, 500);
+		chatScroll.setBounds(5, 5, 550, 400);
 		messageScroll.setBounds(5, 425, 550, 50);
-		sendMessage.setBounds(560, 425, 120,50);
+		sendMessage.setBounds(560, 425, 120, 50);
 		sendFile.setBounds(690, 425, 50, 50);
 		invite.setBounds(560, 5, 175, 40);
 		membersScroll.setBounds(560, 50, 175, 300);
 		leave.setBounds(560, 360, 175, 50);
 	}
-	
+
 	// ------------LISTENERS------------//
-	
+
 	public void addInviteListener(ActionListener e) {
 		invite.addActionListener(e);
 	}
-	
-	public void addMessageBoxListener(KeyListener e,FocusListener f) {
+
+	public void addMessageBoxListener(KeyListener e, FocusListener f) {
 		message.addKeyListener(e);
 		message.addFocusListener(f);
 	}
-	
+
 	public void addSendMessageListener(ActionListener e) {
 		sendMessage.addActionListener(e);
 	}
-	
+
 	public void addSendFileListener(ActionListener e) {
 		sendFile.addActionListener(e);
 	}
-	
+
 	public void addMessageMenuListener(ActionListener e) {
 		privateDM.addActionListener(e);
 	}
-	
+
 	public void addGroupMessageMenuListener(ActionListener e) {
 		createGroupDM.addActionListener(e);
-		
+
 	}
-	
+
 	// ------------UPDATE METHODS------------//
 
 	@Override
-	public void appendChat(String text) {
-		// TODO Auto-generated method stub
-		
+	public MessageScope getScope() {
+		return MessageScope.GROUP;
 	}
 
 	@Override
-	public void clearChat() {
-		// TODO Auto-generated method stub
-		
+	public String getDestination() {
+		return this.destination;
 	}
 
 	@Override
 	public void appendChat(Message<?> message) {
-		// TODO Auto-generated method stub
-		
+		this.appendChat(messageFormatter.format(message));
 	}
 	
+	@Override
+	public void appendChat(String text) {
+		/*chat.setText(chat.getText() + text + "<br>");
+		chat.setCaretPosition(chat.getDocument().getLength());*/
+		try {
+			HTMLDocument doc = (HTMLDocument) chat.getStyledDocument();
+			doc.insertAfterEnd(doc.getCharacterElement(doc.getLength()), text + "<br>");
+			chat.setCaretPosition(doc.getLength());
+		} catch (IOException e) {
+		} catch (BadLocationException e) {}
+	}
+
+	@Override
+	public void clearChat() {
+		try {
+			HTMLDocument doc = (HTMLDocument) chat.getStyledDocument();
+			doc.remove(0, doc.getLength());
+		} catch (BadLocationException e) {}
+	}
+
 	// ------------GETTERS AND SETTERS------------//
 
 	public JButton getSendMessage() {
@@ -190,11 +219,11 @@ public class ClientGroupDMView extends JFrame implements ClientObserver {
 	public void setMessage(JTextField message) {
 		this.message = message;
 	}
-	
+
 	public static String getMessageplaceholdername() {
 		return messagePlaceholderName;
 	}
-	
+
 	public JScrollPane getMembersScroll() {
 		return membersScroll;
 	}
@@ -202,7 +231,7 @@ public class ClientGroupDMView extends JFrame implements ClientObserver {
 	public void setMembersScroll(JScrollPane membersScroll) {
 		this.membersScroll = membersScroll;
 	}
-	
+
 	public JPopupMenu getDmMenu() {
 		return dmMenu;
 	}

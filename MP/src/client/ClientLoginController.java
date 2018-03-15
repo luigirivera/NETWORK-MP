@@ -88,14 +88,14 @@ public class ClientLoginController {
 		if(!view.getUserName().getText().equals(usernamePlaceholder) && port>0) {
 			try {
 				model.openSocket(view.getHost().getText(), port);
-				model.setName(view.getUserName().getText());
-				model.sendMessage(view.getUserName().getText());
-				view.setVisible(false);
-				model.getGlobalView().setVisible(true);
+				if (model.attemptLogin(view.getUserName().getText())) {
+					view.setVisible(false);
+					((ClientGlobalView)model.getChatViews().getGlobal()).setVisible(true);
+				}
 			} catch (IOException ex) { 
 				ex.printStackTrace(); 
 				JOptionPane.showMessageDialog(null, "Server unavailable", "Error", JOptionPane.ERROR_MESSAGE);
-			} 
+			}
 		}
 	}
 }

@@ -1,11 +1,11 @@
 package client;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,32 +13,36 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.html.HTMLDocument;
 
 import message.Message;
 import message.format.HTMLMessageFormatter;
 import message.format.MessageFormatter;
+import message.utility.MessageScope;
 
-public class ClientDMView extends JFrame implements ClientObserver {
+public class ClientDMView extends JFrame implements ChatView {
 	private static final long serialVersionUID = 1L;
 	private static final String messagePlaceholderName = "Message";
 
 	private Client model;
-	private String destUser;
+	private String destination;
 	private MessageFormatter messageFormatter;
 
 	private JPanel dmPanel;
 	private JTextField dmMessage;
 	private JButton dmSend;
-	private JTextArea dmChat;
+	private JTextPane dmChat;
 	private JScrollPane dmChatScroll;
 	private JScrollPane dmMessageScroll;
 	private JButton dmSendFile;
 
-	public ClientDMView(Client model, String destUser) {
-		super(String.format("%s - MonoChrome", destUser));
+	public ClientDMView(Client model, String destination) {
+		super(String.format("%s - MonoChrome", destination));
 
 		this.model = model;
-		this.destUser = destUser;
+		this.destination = destination;
 		this.messageFormatter = new HTMLMessageFormatter();
 
 		init();
@@ -61,7 +65,7 @@ public class ClientDMView extends JFrame implements ClientObserver {
 		dmPanel = new JPanel();
 		dmMessage = new JTextField(messagePlaceholderName);
 		dmSend = new JButton("Send");
-		dmChat = new JTextArea();
+		dmChat = new JTextPane();
 		dmChatScroll = new JScrollPane();
 		dmMessageScroll = new JScrollPane();
 		dmSendFile = new JButton("...");
@@ -69,8 +73,11 @@ public class ClientDMView extends JFrame implements ClientObserver {
 		dmChatScroll.setViewportView(dmChat);
 		dmMessageScroll.setViewportView(dmMessage);
 
-		dmChat.setEditable(false);
-		dmChat.setLineWrap(true);
+		dmChat.setContentType("text/html");
+		dmChat.setText("");
+		HTMLDocument doc = (HTMLDocument) dmChat.getStyledDocument();
+		doc.getStyleSheet().addRule("body {font-family: Helvetica; font-size: 14; }");
+		
 		dmMessage.setForeground(Color.GRAY);
 		
 		dmPanel.setLayout(null);
@@ -105,7 +112,17 @@ public class ClientDMView extends JFrame implements ClientObserver {
 		dmSendFile.addActionListener(e);
 	}
 
-	// ------------UPDATE METHODS------------//
+	// ------------OVERRIDE METHODS------------//
+	@Override
+	public MessageScope getScope() {
+		return MessageScope.DIRECT;
+	}
+	
+	@Override
+	public String getDestination() {
+		return destination;
+	}
+	
 	@Override
 	public void appendChat(Message<?> message) {
 		this.appendChat(messageFormatter.format(message));
@@ -113,22 +130,28 @@ public class ClientDMView extends JFrame implements ClientObserver {
 
 	@Override
 	public void appendChat(String text) {
-		dmChat.setText(dmChat.getText() + text + '\n');
-		dmChat.setCaretPosition(dmChat.getDocument().getLength());
+		/*chat.setText(chat.getText() + text + "<br>");
+		chat.setCaretPosition(chat.getDocument().getLength());*/
+		try {
+			HTMLDocument doc = (HTMLDocument) dmChat.getStyledDocument();
+			doc.insertAfterEnd(doc.getCharacterElement(doc.getLength()), text + "<br>");
+			dmChat.setCaretPosition(doc.getLength());
+		} catch (IOException e) {
+		} catch (BadLocationException e) {}
 	}
 
 	@Override
 	public void clearChat() {
-		dmChat.setText("");
+		try {
+			HTMLDocument doc = (HTMLDocument) dmChat.getStyledDocument();
+			doc.remove(0, doc.getLength());
+		} catch (BadLocationException e) {}
 	}
 
 	// ------------GETTERS AND SETTERS------------//
-	public String getDestUser() {
-		return destUser;
-	}
 
-	public void setDestUser(String destUser) {
-		this.destUser = destUser;
+	public void setDestination(String destination) {
+		this.destination = destination;
 	}
 
 	public JPanel getDmPanel() {
@@ -155,11 +178,11 @@ public class ClientDMView extends JFrame implements ClientObserver {
 		this.dmSend = dmSend;
 	}
 
-	public JTextArea getDmChat() {
+	public JTextPane getDmChat() {
 		return dmChat;
 	}
 
-	public void setDmChat(JTextArea dmChat) {
+	public void setDmChat(JTextPane dmChat) {
 		this.dmChat = dmChat;
 	}
 

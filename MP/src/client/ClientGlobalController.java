@@ -215,7 +215,7 @@ public class ClientGlobalController {
 			else if(SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2 && !view.getUserList().getSelectedValue().equalsIgnoreCase(model.getName())) {
 				ClientDMView newView = new ClientDMView(model, view.getUserList().getSelectedValue());
 				ClientDMController newController = new ClientDMController(model, newView);
-				model.getDMViews().add(newView);
+				model.getChatViews().add(newView);
 				newController.init();
 			}
 		}
@@ -240,7 +240,7 @@ public class ClientGlobalController {
 		public void actionPerformed(ActionEvent arg0) {
 			ClientDMView newView = new ClientDMView(model, view.getUserList().getSelectedValue());
 			ClientDMController newController = new ClientDMController(model, newView);
-			model.getDMViews().add(newView);
+			model.getChatViews().add(newView);
 			newController.init();
 			
 		}

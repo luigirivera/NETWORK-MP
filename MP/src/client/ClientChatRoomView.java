@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -16,16 +17,25 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.html.HTMLDocument;
 
-import client.ClientChatRoomController.MessageBoxFocusListener;
-import client.ClientChatRoomController.MessageBoxKeyListener;
+import message.Message;
+import message.content.UsernameList;
+import message.format.MessageFormatter;
+import message.utility.MessageScope;
 
-public class ClientChatRoomView extends JFrame {
+public class ClientChatRoomView extends JFrame implements ChatView, ShowsUsernameList{
 	private static final long serialVersionUID = 1L;
 	private static final String messagePlaceholderName = "Message";
+	
+	private Client model;
+	private String destination;
+	private MessageFormatter messageFormatter;
 
-	private JTextArea chat;
+	private JTextPane chat;
 	private JLabel password;
 	private JButton sendMessage;
 	private JButton sendFile;
@@ -40,14 +50,12 @@ public class ClientChatRoomView extends JFrame {
 	private JScrollPane messageScroll;
 	private JPanel panel;
 	private DefaultListModel<String> membersList;
-	private Client model;
 	
-	private String destRoom;
-	
-	public ClientChatRoomView(Client model, String name) {
+	public ClientChatRoomView(Client model, String name, String destination) {
 		super(String.format("%s Chat Room", name));
 		
 		this.model = model;
+		this.destination = destination;
 		
 		if(model.getSystemOS().equals("Windows"))
 			this.setSize(770, 525);
@@ -68,7 +76,7 @@ public class ClientChatRoomView extends JFrame {
 	private void init() {
 		String passwordText = "<html><div style='text-align: center;'>Password:<br/>(password here)</div></html>";
 		panel = new JPanel();
-		chat = new JTextArea();
+		chat = new JTextPane();
 		password = new JLabel(passwordText, SwingConstants.CENTER);
 		sendMessage = new JButton("Send");
 		sendFile = new JButton("...");
@@ -87,8 +95,11 @@ public class ClientChatRoomView extends JFrame {
 		chatScroll.setViewportView(chat);
 		messageScroll.setViewportView(message);
 		
-		chat.setEditable(false);
-		chat.setLineWrap(true);
+		chat.setContentType("text/html");
+		chat.setText("");
+		HTMLDocument doc = (HTMLDocument) chat.getStyledDocument();
+		doc.getStyleSheet().addRule("body {font-family: Helvetica; font-size: 14; }");
+		
 		message.setForeground(Color.GRAY);
 		
 		dmMenu.add(privateDM);
@@ -136,13 +147,58 @@ public class ClientChatRoomView extends JFrame {
 		createGroupDM.addActionListener(e);
 		
 	}
-	// ------------UPDATE METHODS------------//
+	// ------------OVERRIDE METHODS------------//
+
+	@Override
+	public MessageScope getScope() {
+		return MessageScope.ROOM;
+	}
+
+	@Override
+	public String getDestination() {
+		return this.destination;
+	}
+
+	@Override
+	public void appendChat(Message<?> message) {
+		this.appendChat(messageFormatter.format(message));
+	}
+	
+	@Override
+	public void appendChat(String text) {
+		/*chat.setText(chat.getText() + text + "<br>");
+		chat.setCaretPosition(chat.getDocument().getLength());*/
+		try {
+			HTMLDocument doc = (HTMLDocument) chat.getStyledDocument();
+			doc.insertAfterEnd(doc.getCharacterElement(doc.getLength()), text + "<br>");
+			chat.setCaretPosition(doc.getLength());
+		} catch (IOException e) {
+		} catch (BadLocationException e) {}
+	}
+
+	@Override
+	public void clearChat() {
+		try {
+			HTMLDocument doc = (HTMLDocument) chat.getStyledDocument();
+			doc.remove(0, doc.getLength());
+		} catch (BadLocationException e) {}
+	}
+	
+	@Override
+	public void updateUsernameList(UsernameList usernames) {
+		membersList.clear();
+		for (String str : usernames) {
+			membersList.addElement(str);
+		}
+	}
+	
 	// ------------GETTERS AND SETTERS------------//
-	public JTextArea getChat() {
+
+	public JTextPane getChat() {
 		return chat;
 	}
 
-	public void setChat(JTextArea chat) {
+	public void setChat(JTextPane chat) {
 		this.chat = chat;
 	}
 

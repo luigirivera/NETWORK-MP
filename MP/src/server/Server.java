@@ -9,12 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import message.Message;
+import message.content.LoginAttempt;
 import message.content.LoginResult;
 import message.content.UsernameList;
 import message.format.MessageFormatter;
 import message.format.PlainMessageFormatter;
 import message.utility.MessageFactory;
 import message.utility.MessageRouter;
+import message.utility.MessageScope;
 
 public class Server {
 	private ServerSocket serverSocket;
@@ -118,8 +120,8 @@ public class Server {
 				while (this.checkConnection()) {
 					messageRouter.route(connection.readMessage());
 				}
-			} catch (IOException e) {
-			} catch (ClassNotFoundException e) {
+			} catch (IOException e) { e.printStackTrace();
+			} catch (ClassNotFoundException e) { e.printStackTrace();
 			} finally {
 				try {
 					server.closeConnection(connection);
@@ -133,8 +135,8 @@ public class Server {
 	private void addUser(Socket socket) throws IOException, ClassNotFoundException {
 		UserConnection uc = new UserConnection(new User(), socket);
 		Message<?> initMessage = uc.readMessage();
-		if (isUsernameUnique(initMessage.getSource())) {
-			uc.getUser().setName(initMessage.getSource());
+		if (isUsernameUnique(((LoginAttempt)initMessage.getContent()).getUsername())) {
+			uc.getUser().setName(((LoginAttempt)initMessage.getContent()).getUsername());
 			connections.add(uc);
 			this.sendMessage(MessageFactory.getInstance(LoginResult.SUCCESS), uc);
 			this.blastMessage(String.format("%s joined the chat. Say hi!", uc.getUser().getName()));
@@ -143,19 +145,14 @@ public class Server {
 			Thread thread = new Thread(new ConnectionMaintainer(this, uc));
 			thread.start();
 		} else {
-			this.log(socket.getRemoteSocketAddress() + "rejected: username taken");
+			this.log(socket.getRemoteSocketAddress() + " rejected: username taken");
 			this.sendMessage(MessageFactory.getInstance(LoginResult.FAILED), uc);
 			socket.close();
 		}
 	}
 
 	private boolean isUsernameUnique(String username) {
-		for (UserConnection x : connections) {
-			if (x.getUser().getName().equalsIgnoreCase(username)) {
-				return false;
-			}
-		}
-		return true;
+		return !connections.contains(username);
 	}
 
 	public void closeConnection(UserConnection connection) throws IOException {
@@ -167,8 +164,9 @@ public class Server {
 	}
 
 	public void blastUsernameList() {
-		List<String> usernames = connections.getUsernames();
+		UsernameList usernames = connections.getUsernames();
 		Message<?> message = MessageFactory.getInstance(usernames);
+		message.setScope(MessageScope.GLOBAL);
 		this.blastMessage(message);
 	}
 
@@ -180,7 +178,7 @@ public class Server {
 
 	public void blastMessage(String content) {
 		Message<?> message = MessageFactory.getInstance(content);
-		message.setSource("Server");
+		message.setScope(MessageScope.GLOBAL);
 		this.blastMessage(message);
 	}
 
@@ -194,12 +192,6 @@ public class Server {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public void sendMessage(String content, UserConnection dest) {
-		Message<?> message = MessageFactory.getInstance(content);
-		message.setSource("Server");
-		this.sendMessage(message, dest);
 	}
 
 	public void attach(ServerObserver obs) {

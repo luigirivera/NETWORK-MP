@@ -72,8 +72,8 @@ public class ClientChatRoomListController {
 
 		@Override
 		public void windowClosing(WindowEvent arg0) {			
-			model.getGlobalView().getHideChatRoom().setVisible(false);
-			model.getGlobalView().getShowChatRoom().setVisible(true);
+			((ClientGlobalView)model.getChatViews().getGlobal()).getHideChatRoom().setVisible(false);
+			((ClientGlobalView)model.getChatViews().getGlobal()).getShowChatRoom().setVisible(true);
 		}
 		@Override
 		public void windowDeactivated(WindowEvent arg0) {}

@@ -16,6 +16,7 @@ public class ServerMessageRouter implements MessageRouter {
 	@Override
 	public void route(Message<?> message) {
 		if(message instanceof TextMessage) {
+			System.out.println(message.getContent());
 			switch(message.getScope()) {
 			case GLOBAL: routeGlobal(message); break;
 			case DIRECT: routeDirect(message); break;
@@ -32,7 +33,7 @@ public class ServerMessageRouter implements MessageRouter {
 			}
 		}
 		else if (message instanceof FileRequestMessage) {
-			
+			//send FileMessage containing requested file back to user
 		}
 	}
 	

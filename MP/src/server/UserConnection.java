@@ -27,6 +27,7 @@ public class UserConnection {
 
 	public Message<?> readMessage() throws IOException, ClassNotFoundException {
 		Message<?> message = (Message<?>) this.getInStream().readObject();
+		message.setSource(this.user.getName()); // is this a good idea? testing
 		return message;
 	}
 

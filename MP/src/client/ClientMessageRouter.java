@@ -1,6 +1,8 @@
 package client;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 import message.FileMessage;
 import message.Message;
@@ -77,8 +79,16 @@ public class ClientMessageRouter implements MessageRouter {
 			ChatView cv = client.getChatViews().getAssociatedView(message);
 			if (cv!=null) {
 				cv.appendChat(message);
-				File file = ((FileMessage)message).getContent();
-			System.out.println(file.getAbsolutePath());
+				File fileA = ((FileMessage)message).getContent();
+				File fileB = new File(fileA.getName());
+				try {
+					FileInputStream fis = new FileInputStream(fileA);
+					FileOutputStream fos = new FileOutputStream(fileB);
+					while(fis.available()>0) {
+						fos.write(fis.read());
+					}
+				} catch (Exception e) {e.printStackTrace();}
+				System.out.println(fileB.getAbsolutePath());
 			}
 			else {
 				this.openNewView(message);

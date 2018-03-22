@@ -107,7 +107,7 @@ public class Server {
 		}
 
 		public boolean checkConnection() throws IOException {
-			if (!connection.getSocket().getInetAddress().isReachable(5000)) {
+			if (!connection.getSocket().getInetAddress().isReachable(10000)) {
 				System.out.println("Could not reach");
 				server.closeConnection(connection);
 				return false;

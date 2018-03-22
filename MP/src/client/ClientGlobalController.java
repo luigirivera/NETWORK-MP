@@ -13,15 +13,17 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+
+import message.Message;
+import message.utility.MessageFactory;
+import message.utility.MessageScope;
 
 public class ClientGlobalController {
 
@@ -86,7 +88,13 @@ public class ClientGlobalController {
 			
 				switch(result) {
 				case JOptionPane.OK_OPTION:
-					//send file
+					Message<?> msg = MessageFactory.getInstance(file);
+					msg.setScope(MessageScope.GLOBAL);
+					try {
+						model.sendMessage(msg);
+					} catch (IOException ex) {
+						ex.printStackTrace();
+					}
 					break;
 				default:
 					break;

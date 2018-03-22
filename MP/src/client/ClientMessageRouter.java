@@ -1,5 +1,7 @@
 package client;
 
+import java.io.File;
+
 import message.FileMessage;
 import message.Message;
 import message.TextMessage;
@@ -73,8 +75,11 @@ public class ClientMessageRouter implements MessageRouter {
 		}
 		else if (message instanceof FileMessage) {
 			ChatView cv = client.getChatViews().getAssociatedView(message);
-			if (cv!=null)
+			if (cv!=null) {
 				cv.appendChat(message);
+				File file = ((FileMessage)message).getContent();
+			System.out.println(file.getAbsolutePath());
+			}
 			else {
 				this.openNewView(message);
 			}

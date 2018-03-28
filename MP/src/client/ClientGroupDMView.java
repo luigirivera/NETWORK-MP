@@ -93,6 +93,7 @@ public class ClientGroupDMView extends JFrame implements ChatView{
 
 		chat.setContentType("text/html");
 		chat.setText("");
+		chat.setEditable(false);
 		HTMLDocument doc = (HTMLDocument) chat.getStyledDocument();
 		doc.getStyleSheet().addRule("body {font-family: Helvetica; font-size: 14; }");
 		

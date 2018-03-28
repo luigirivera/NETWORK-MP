@@ -75,6 +75,7 @@ public class ClientDMView extends JFrame implements ChatView {
 
 		dmChat.setContentType("text/html");
 		dmChat.setText("");
+		dmChat.setEditable(false);
 		HTMLDocument doc = (HTMLDocument) dmChat.getStyledDocument();
 		doc.getStyleSheet().addRule("body {font-family: Helvetica; font-size: 14; }");
 		

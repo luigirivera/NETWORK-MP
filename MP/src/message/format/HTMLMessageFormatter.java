@@ -28,8 +28,7 @@ public class HTMLMessageFormatter extends MessageFormatter {
 			String[] nameSplit = message.getContent().getName().split("\\.");
 			String ext = nameSplit[nameSplit.length-1];
 			if (imageExtensions.contains(ext))
-				//return String.format("<font color=#FF0000>%s : <img src=\"%s\"></font>", message.getSource(), message.getContent().getName());
-				return String.format("<font color=#FF0000>%s : <img src=\"%s\" width=\"500\" height=\"500\"></font>", message.getSource(), "/Users/luisenricolopez/Desktop/spag.png");
+				return String.format("<font color=#FF0000>%s : <img src=\"file:%s\" title=\"%s\" width=\"300\" height=\"200\"></font>", message.getSource(), message.getContent().getAbsolutePath(), message.getContent().getName());
 		} catch (IndexOutOfBoundsException | IllegalStateException e) {}
 		return String.format("<font color=#FF0000>%s : <a href=\"%s\">%s</a></font>", message.getSource(), message.getContent().getName(), message.getContent());
 	}

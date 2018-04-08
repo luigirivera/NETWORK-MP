@@ -1,24 +1,16 @@
 package chatroom;
 
-import client.Client;
-import client.ClientGlobalController;
-import client.ClientGlobalView;
-import client.ClientLoginController;
-import client.ClientLoginView;
+import client.controller.ClientController;
+import client.controller.DefaultClientController;
+import client.model.ClientModel;
+import client.model.DefaultClientModel;
+import client.view.ClientLoginView;
 
 public class ClientDriver {
-
 	public static void main(String[] args) {
-		Client model = new Client();
-		ClientLoginView lview = new ClientLoginView(model);
-		ClientLoginController lcontroller = new ClientLoginController(model, lview);
-		ClientGlobalView gview = new ClientGlobalView(model);
-		ClientGlobalController gcontroller = new ClientGlobalController(model, gview);
-		
-		model.setLoginView(lview);
-		model.getChatViews().add(gview);
-		lcontroller.init();
-		gcontroller.init();
+		ClientModel cm = new DefaultClientModel();
+		ClientController cc = new DefaultClientController(cm);
+		ClientLoginView cv = new ClientLoginView(cm, cc);
+		cm.attach(cv);
 	}
-
 }

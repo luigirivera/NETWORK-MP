@@ -13,6 +13,8 @@ public abstract class Message<E> implements Serializable {
 	protected E content;
 	protected MessageScope scope;
 	protected LocalDateTime timestamp;
+	
+	protected Message() {}
 
 	public String getSource() {
 		return source;

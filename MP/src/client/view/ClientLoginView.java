@@ -2,13 +2,16 @@ package client.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.IOException;
+import java.net.URL;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,6 +28,7 @@ public class ClientLoginView extends JFrame implements ClientObserver {
 	private ClientModel model;
 	private ClientController controller;
 
+	private JLabel logo;
 	private JTextField host;
 	private JTextField port;
 	private JTextField userName;
@@ -66,6 +70,7 @@ public class ClientLoginView extends JFrame implements ClientObserver {
 	// ------------INITIALIZER------------//
 
 	public void init() {
+		logo = new JLabel(new ImageIcon(new ImageIcon("res/mc_logo.png").getImage().getScaledInstance(400, 200, Image.SCALE_DEFAULT)));
 		panel = new JPanel();
 		userName = new JTextField("");
 		host = new JTextField("localhost");
@@ -74,6 +79,7 @@ public class ClientLoginView extends JFrame implements ClientObserver {
 		portLabel = new JLabel("Port:");
 		login = new JButton("Login");
 
+		logo.setPreferredSize(new Dimension(200, 50));
 		userName.setPreferredSize(new Dimension(100, 25));
 		host.setPreferredSize(new Dimension(100, 25));
 		port.setPreferredSize(new Dimension(100, 25));
@@ -82,6 +88,7 @@ public class ClientLoginView extends JFrame implements ClientObserver {
 		userName.setForeground(Color.GRAY);
 
 		panel.setLayout(null);
+		panel.add(logo);
 		panel.add(hostLabel);
 		panel.add(host);
 		panel.add(portLabel);
@@ -89,6 +96,7 @@ public class ClientLoginView extends JFrame implements ClientObserver {
 		panel.add(userName);
 		panel.add(login);
 
+		logo.setBounds(50, -40, 400, 200);
 		hostLabel.setBounds(60, 110, 50, 15);
 		host.setBounds(100, 105, 120, 25);
 		portLabel.setBounds(60, 150, 50, 15);

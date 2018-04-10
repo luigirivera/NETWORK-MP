@@ -506,6 +506,9 @@ class ClientChatRoomListView extends JFrame {
 			setSize(400, 600);
 		else*/
 			setSize(420, 625);
+			
+			ImageIcon icon = new ImageIcon("res/mc_icon.png");
+			setIconImage(icon.getImage());
 
 		setLayout(null);
 		setResizable(false);

@@ -1,7 +1,6 @@
 package client.controller;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -19,6 +18,7 @@ import message.ChatRoomInfoMessage;
 import message.FileMessage;
 import message.LoginResultMessage;
 import message.Message;
+import message.content.FileContent;
 import message.content.GroupInvite;
 import message.content.GroupJoin;
 import message.content.GroupLeave;
@@ -94,17 +94,15 @@ public class DefaultClientController implements ClientController {
 				openRoomWindow(((ChatRoomInfoMessage)message).getContent().getId(), ((ChatRoomInfoMessage)message).getContent().getName());
 			}
 			if (message instanceof FileMessage) {
-				File fileA = ((FileMessage)message).getContent();
-				File fileB = new File(fileA.getName());
+				byte[] fileBytes = ((FileMessage)message).getContent().getBytes();
+				File file = new File(((FileMessage)message).getContent().getPath());
 				try {
-					FileInputStream fis = new FileInputStream(fileA);
-					FileOutputStream fos = new FileOutputStream(fileB);
-					while(fis.available()>0) {
-						fos.write(fis.read());
+					FileOutputStream fos = new FileOutputStream(file);
+					for (byte b : fileBytes) {
+						fos.write(b);
 					}
 					fos.close();
-					fis.close();
-					((FileMessage)message).setContent(fileB);
+					((FileMessage)message).setContent(new FileContent(file.getAbsolutePath(), fileBytes));
 				} catch (Exception e) {e.printStackTrace();}
 			}
 			model.add(message);

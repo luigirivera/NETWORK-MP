@@ -11,6 +11,6 @@ public class PlainMessageFormatter extends MessageFormatter {
 	
 	@Override
 	public String formatFile(FileMessage message) {
-		return String.format("%s : %s", message.getSource(), message.getContent().getName());
+		return String.format("%s : %s", message.getSource(), message.getContent());
 	}
 }

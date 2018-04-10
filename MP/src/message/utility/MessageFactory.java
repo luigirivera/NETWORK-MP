@@ -1,6 +1,9 @@
 package message.utility;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 import message.ChatRoomInfoListMessage;
 import message.ChatRoomInfoMessage;
@@ -18,6 +21,7 @@ import message.TextMessage;
 import message.UsernameListMessage;
 import message.content.ChatRoomInfo;
 import message.content.ChatRoomInfoList;
+import message.content.FileContent;
 import message.content.FileRequest;
 import message.content.GroupInvite;
 import message.content.GroupJoin;
@@ -36,7 +40,17 @@ public abstract class MessageFactory {
 			return message;
 		} else if (content instanceof File) {
 			FileMessage message = new FileMessage();
-			message.setContent((File) content);
+			byte[] fileBytes = new byte[0];
+			try {
+			FileInputStream fis = new FileInputStream((File)content);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			while (fis.available()>0)
+				baos.write(fis.read());
+			fileBytes = baos.toByteArray();
+			baos.close();
+			fis.close();
+			} catch (IOException ex) {ex.printStackTrace(); fileBytes = new byte[0];}
+			message.setContent(new FileContent(((File)content).getName(), fileBytes));
 			return message;
 		} else if (content instanceof ChatRoomInfo) {
 			ChatRoomInfoMessage message = new ChatRoomInfoMessage();

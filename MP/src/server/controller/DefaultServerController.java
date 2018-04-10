@@ -6,7 +6,7 @@ import java.net.ServerSocket;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import message.FileMessage;
+import message.ChatMessage;
 import message.GroupInviteMessage;
 import message.GroupJoinMessage;
 import message.GroupLeaveMessage;
@@ -14,7 +14,6 @@ import message.LoginAttemptMessage;
 import message.Message;
 import message.PrivateGroupCreateMessage;
 import message.PublicGroupCreateMessage;
-import message.TextMessage;
 import message.content.ChatRoomInfo;
 import message.content.ChatRoomInfoList;
 import message.content.LoginResult;
@@ -159,7 +158,7 @@ public class DefaultServerController implements ServerController {
 	
 	class ServerMessageHandler {
 		public void handle(Message<?> message) throws IOException {
-			if (message instanceof TextMessage || message instanceof FileMessage) {
+			if (message instanceof ChatMessage) {
 				messageModel.add(message);
 				returnToClients(message);
 			}

@@ -25,12 +25,12 @@ public class HTMLMessageFormatter extends MessageFormatter {
 	@Override
 	public String formatFile(FileMessage message) {
 		try {
-			String[] nameSplit = message.getContent().getName().split("\\.");
+			String[] nameSplit = message.getContent().getPath().split("\\.");
 			String ext = nameSplit[nameSplit.length-1];
 			if (imageExtensions.contains(ext))
-				return String.format("<font color=#FF0000>%s : <img src=\"file:%s\" title=\"%s\" width=\"300\" height=\"200\"></font>", message.getSource(), message.getContent().getAbsolutePath(), message.getContent().getName());
+				return String.format("<font color=#FF0000>%s : <img src=\"file:%s\" title=\"%s\" width=\"300\" height=\"200\"></font>", message.getSource(), message.getContent().getPath(), message.getContent().getPath());
 		} catch (IndexOutOfBoundsException | IllegalStateException e) {}
-		return String.format("<font color=#FF0000>%s : <a href=\"%s\">%s</a></font>", message.getSource(), message.getContent().getName(), message.getContent());
+		return String.format("<font color=#FF0000>%s : <a href=\"%s\">%s</a></font>", message.getSource(), message.getContent().getPath(), message.getContent().getPath());
 	}
 
 }

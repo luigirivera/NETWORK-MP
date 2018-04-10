@@ -7,6 +7,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -57,6 +58,9 @@ public class ServerView extends JFrame implements ServerMessageObserver, ServerL
 		else
 			setSize(420,1025);*/
 		setSize(400,1000);
+		
+		ImageIcon icon = new ImageIcon("res/mc_icon.png");
+		setIconImage(icon.getImage());
 		
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);

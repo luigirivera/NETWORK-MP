@@ -58,6 +58,9 @@ public class ClientLoginView extends JFrame implements ClientObserver {
 		setSize(500, 200);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+		
+		ImageIcon icon = new ImageIcon("res/mc_icon.png");
+		setIconImage(icon.getImage());
 
 		setLayout(null);
 		setVisible(true);

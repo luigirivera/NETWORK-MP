@@ -12,6 +12,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -62,6 +63,9 @@ public class ClientDMView extends JFrame implements ClientObserver {
 		else
 			this.setSize(520, 545);*/
 		this.setSize(500, 520);
+		
+		ImageIcon icon = new ImageIcon("res/mc_icon.png");
+		setIconImage(icon.getImage());
 
 		this.setLayout(null);
 		this.setVisible(true);

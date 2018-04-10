@@ -24,6 +24,7 @@ import java.io.IOException;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -99,6 +100,9 @@ public class ClientGlobalView extends JFrame implements ClientObserver {
 		setSize(750, 575);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+		
+		ImageIcon icon = new ImageIcon("res/mc_icon.png");
+		setIconImage(icon.getImage());
 
 		setLayout(null);
 		setVisible(true);
@@ -502,6 +506,9 @@ class ClientChatRoomListView extends JFrame {
 			setSize(400, 600);
 		else*/
 			setSize(420, 625);
+			
+			ImageIcon icon = new ImageIcon("res/mc_icon.png");
+			setIconImage(icon.getImage());
 
 		setLayout(null);
 		setResizable(false);

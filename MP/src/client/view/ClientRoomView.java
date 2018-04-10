@@ -12,6 +12,7 @@ import java.awt.event.WindowListener;
 import java.io.File;
 
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -74,6 +75,9 @@ public class ClientRoomView extends JFrame implements ClientObserver{
 			this.setSize(770, 525);*/
 		
 		this.setSize(750, 500);
+		
+		ImageIcon icon = new ImageIcon("res/mc_icon.png");
+		setIconImage(icon.getImage());
 
 		this.init();
 		this.setLayout(null);

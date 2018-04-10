@@ -31,6 +31,10 @@ public class UserConnection {
 		}
 	}
 	
+	public void closeSocket() throws IOException {
+		this.socket.close();
+	}
+	
 	public boolean isConnected() {
 		try {
 			return this.socket.getInetAddress().isReachable(REACH_TIMEOUT_MS);

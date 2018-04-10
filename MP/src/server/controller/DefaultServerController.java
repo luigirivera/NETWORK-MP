@@ -116,7 +116,7 @@ public class DefaultServerController implements ServerController {
 		
 		public void run() {
 			try {
-				while(uc.isConnected()) {
+				while(uc.isConnected() && !serverSocket.isClosed()) {
 					Message<?> message = uc.readMessage();
 					messageHandler.handle(message);
 				}
@@ -127,6 +127,7 @@ public class DefaultServerController implements ServerController {
 			userModel.remove(uc);
 			logModel.log(uc.getUser().getName() + " disconnected");
 			try {
+				uc.closeSocket();
 				Message<?> notify = MessageFactory.getInstance(uc.getUser().getName() + " left the chat.");
 				sendGlobal(notify);
 				blastUserList();
@@ -150,10 +151,10 @@ public class DefaultServerController implements ServerController {
 
 	@Override
 	public void closeServer() throws IOException {
-		if (this.serverSocket != null && !this.serverSocket.isClosed())
+		if (this.serverSocket != null && !this.serverSocket.isClosed()) {
 			this.serverSocket.close();
-		
-		logModel.log("Server closed!");
+			logModel.log("Server closed!");
+		}
 	}
 	
 	class ServerMessageHandler {

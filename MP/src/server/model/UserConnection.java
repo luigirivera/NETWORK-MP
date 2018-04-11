@@ -8,7 +8,7 @@ import java.net.Socket;
 import message.Message;
 
 public class UserConnection {
-	public static final int REACH_TIMEOUT_MS = 2000;
+	public static final int REACH_TIMEOUT_MS = 5000;
 	
 	private User user;
 	private Socket socket;

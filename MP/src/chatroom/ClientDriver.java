@@ -1,3 +1,11 @@
+/*
+ * LLAMAS, ANTONIO MIGUEL
+ * LOPEZ, LUIS ENRICO
+ * PLANAS, NICOLE DANIELLE
+ * RIVERA, LOUIE IV
+ * NETWORK S17
+ */
+
 package chatroom;
 
 import client.controller.ClientController;
